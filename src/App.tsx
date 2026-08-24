@@ -104,7 +104,7 @@ function AppShell() {
     <div className="app-shell">
       <aside className={`sidebar${sidebarOpen ? ' is-open' : ''}`}>
         <div className="sidebar__brand"><BrandMark /><div><strong>SAVE</strong><span>EXPLORER</span></div></div>
-        <p className="sidebar__caption">{t('app.tagline')} · COMPANION</p>
+        <p className="sidebar__caption">{t('app.tagline')}</p>
         <nav>
           <button className={page === 'explorer' ? 'is-active' : ''} onClick={() => navigate('explorer')}><LayoutGrid size={18} /><span>{t('nav.explorer')}</span><b>{scan?.saves.length || 0}</b><i /></button>
           <button className={page === 'stats' ? 'is-active' : ''} onClick={() => navigate('stats')}><ScrollText size={18} /><span>{t('nav.stats')}</span><i /></button>

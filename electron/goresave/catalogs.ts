@@ -37,6 +37,7 @@ interface LocationCatalog {
 }
 
 type BundledLocalization = Record<string, { en?: string; de?: string }>
+type PolishOverrides = Record<string, string>
 
 // Outside a real Electron process (the `inspect:saves` dev script), fall back to a path
 // relative to this module — mirrors the same fallback in ./client.ts.
@@ -70,6 +71,8 @@ let itemCategories: Map<string, string> | null = null
 let npcCategories: Map<string, string> | null = null
 let locationCatalog: LocationCatalog | null = null
 let bundledLocalization: BundledLocalization | null = null
+let polishOverrides: PolishOverrides | null = null
+let glossarySegmentLabels: PolishOverrides | null = null
 let loadingCatalogs: Promise<void> | null = null
 
 function ensureCatalogs(): Promise<void> {
@@ -79,12 +82,16 @@ function ensureCatalogs(): Promise<void> {
       readJson<NpcCatalogEntry[]>('npc_catalog.json'),
       readJson<LocationCatalog>('location_catalog.json'),
       readJson<BundledLocalization>('g1r_editor_localization.json'),
-    ]).then(([items, npcs, locations, bundled]) => {
+      readJson<PolishOverrides>('pl_overrides.json'),
+      readJson<PolishOverrides>('pl_glossary_segments.json'),
+    ]).then(([items, npcs, locations, bundled, polish, glossarySegments]) => {
       itemEntries = items
       itemCategories = new Map(items.map((item) => [item.id.toLowerCase(), item.category]))
       npcCategories = new Map(npcs.map((npc) => [npc.id.toLowerCase(), npc.category]))
       locationCatalog = locations
       bundledLocalization = bundled
+      polishOverrides = polish
+      glossarySegmentLabels = glossarySegments
     }).catch(() => {
       // A missing/corrupt bundled catalog should never block the app — resolvers fall back to raw IDs.
       itemEntries = itemEntries.length ? itemEntries : []
@@ -92,16 +99,31 @@ function ensureCatalogs(): Promise<void> {
       npcCategories = npcCategories || new Map()
       locationCatalog = locationCatalog || { areas: [], spots: [] }
       bundledLocalization = bundledLocalization || {}
+      polishOverrides = polishOverrides || {}
+      glossarySegmentLabels = glossarySegmentLabels || {}
     })
   }
   return loadingCatalogs
 }
 
+/** Short dialogue-topic / document-segment labels shown in the Kompendium tab (e.g. "Introduction",
+ * "Dead", "Teacher") — a small closed vocabulary reused across hundreds of NPCs, translated by hand. */
+export async function resolveGlossarySegmentLabel(prettifiedLabel: string): Promise<string> {
+  await ensureCatalogs()
+  return glossarySegmentLabels?.[prettifiedLabel] || prettifiedLabel
+}
+
+/** Live text extracted from the player's own installed game is the most authentic source and
+ * always wins. Otherwise we prefer our own hand-written Polish names (covers the most common
+ * items, NPCs and quests) over the bundled English/German fallback, so the app reads as Polish
+ * even when the game isn't installed locally. */
 async function resolveLocKey(key: string): Promise<string | undefined> {
   await ensureCatalogs()
   const live = await loadGameLocalization()
   const liveText = pickLocalizedText(live?.get(key), true)
   if (liveText) return liveText
+  const polish = polishOverrides?.[key]
+  if (polish) return polish
   const bundled = bundledLocalization?.[key]
   return bundled?.en
 }

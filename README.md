@@ -63,13 +63,6 @@ Tryb eksploratora otwiera pliki gry wyłącznie do odczytu i nigdy ich nie kopiu
 
 Tryb edytora nigdy nie modyfikuje oryginalnego pliku — pracuje na tymczasowej kopii, którą niezależnie waliduje przed dołożeniem jako nowy slot. Aplikacja nie czyta pamięci procesu gry.
 
-## Komponenty zewnętrzne
-
-Aplikacja korzysta z dwóch niezależnych, nieoficjalnych projektów społecznościowych na licencji MIT — pełne informacje w [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md):
-
-- [GORE / goresave](https://github.com/dh0er/gore) (Daniel Hoer) — biblioteka `gore_save.dll` do odczytu i zapisu zapisów oraz bundlowane katalogi nazw,
-- [Gothic 1 Remake Savegame Editor](https://github.com/Xetoxyc/gothic-remake-savegame-editor) (Tobias Sittenauer) — bundlowany słownik lokalizacji EN/DE oraz punkt odniesienia dla bezpiecznej edycji zapisu.
-
 ## Licencja
 
 [MIT](LICENSE)

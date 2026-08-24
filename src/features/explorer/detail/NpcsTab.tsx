@@ -1,6 +1,7 @@
 import { Heart, MapPinned, Skull, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { SearchField, SegmentedControl, ViewToggle } from '../../../components/Controls'
+import { Modal } from '../../../components/Modal'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource, useViewMode } from '../../../lib/hooks'
 import type { NpcDetail, NpcRelationship, NpcSummary } from '../../../types'
@@ -87,9 +88,11 @@ export function NpcsTab({ filePath }: { filePath: string }) {
       <TabPanelState loading={npcs.loading} error={npcs.error} empty={!npcs.loading && !filtered.length} emptyLabel="Brak pasujących postaci" />
 
       {selectedId && (
-        <TabPanelState loading={detail.loading} error={detail.error} />
+        <Modal onClose={() => setSelectedId(null)}>
+          <TabPanelState loading={detail.loading} error={detail.error} />
+          {detail.data && <NpcDetailPanel npc={detail.data} onClose={() => setSelectedId(null)} />}
+        </Modal>
       )}
-      {selectedId && detail.data && <NpcDetailPanel npc={detail.data} onClose={() => setSelectedId(null)} />}
 
       {!npcs.loading && filtered.length > 0 && viewMode === 'list' && (
         <div className="npc-list">

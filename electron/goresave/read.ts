@@ -25,7 +25,7 @@ import type {
   TypedPropertySearchResult,
 } from '../../src/types'
 import { asRecord, cacheKey, executeCore, stringValue, type JsonRecord } from './client'
-import { resolveItemName, resolveNearestArea, resolveNpcName, resolveQuestName, resolveSkillName } from './catalogs'
+import { resolveGlossarySegmentLabel, resolveItemName, resolveNearestArea, resolveNpcName, resolveQuestName, resolveSkillName } from './catalogs'
 
 const attributeLabels: Record<string, string> = {
   Health: 'Punkty życia',
@@ -410,11 +410,11 @@ export async function getGlossary(filePath: string): Promise<GlossaryResult> {
   const rawEntries = asArray(result.categories).flatMap((category) => asArray(category.entries))
   const byCategory = new Map<string, GlossaryEntry[]>()
   for (const raw of rawEntries) {
-    const segments: GlossarySegment[] = asArray(raw.segments).map((segment) => ({
+    const segments: GlossarySegment[] = await Promise.all(asArray(raw.segments).map(async (segment) => ({
       id: stringValue(segment.id),
-      name: prettifyIdentifier(stringValue(segment.name)),
+      name: await resolveGlossarySegmentLabel(prettifyIdentifier(stringValue(segment.name))),
       unlocked: boolValue(segment.unlocked),
-    }))
+    })))
     const entry: GlossaryEntry = {
       id: stringValue(raw.id),
       name: prettifyIdentifier(stringValue(raw.name) || stringValue(raw.id)),

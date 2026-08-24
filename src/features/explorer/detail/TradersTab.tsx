@@ -1,5 +1,6 @@
 import { Coins, X } from 'lucide-react'
 import { useState } from 'react'
+import { Modal } from '../../../components/Modal'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
 import type { TraderDetail, TraderSummary } from '../../../types'
@@ -40,8 +41,12 @@ export function TradersTab({ filePath }: { filePath: string }) {
   return (
     <div className="deep-tab-panel">
       <TabPanelState loading={traders.loading} error={traders.error} empty={!traders.loading && !traders.data?.length} emptyLabel="Brak handlarzy w tym zapisie" />
-      {selectedIndex !== null && <TabPanelState loading={detail.loading} error={detail.error} />}
-      {selectedIndex !== null && detail.data && <TraderDetailPanel trader={detail.data} onClose={() => setSelectedIndex(null)} />}
+      {selectedIndex !== null && (
+        <Modal onClose={() => setSelectedIndex(null)}>
+          <TabPanelState loading={detail.loading} error={detail.error} />
+          {detail.data && <TraderDetailPanel trader={detail.data} onClose={() => setSelectedIndex(null)} />}
+        </Modal>
+      )}
       {traders.data && traders.data.length > 0 && (
         <div className="trader-list">
           {traders.data.map((trader) => (

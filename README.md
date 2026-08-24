@@ -32,31 +32,6 @@ Każda zmiana trafia do kolejki, a zapis odbywa się dopiero po kliknięciu „Z
 
 Nazwy przedmiotów, NPC, questów i lokacji są tłumaczone przez łańcuch źródeł: jeśli gra jest zainstalowana lokalnie, aplikacja odczytuje jej własny (zaszyfrowany) plik lokalizacji i pokazuje autentyczny polski tekst; w innym wypadku korzysta z bundlowanego słownika angielskiego, a na końcu z uczłowieczonego identyfikatora. Interfejs (przyciski, nagłówki) ma osobny przełącznik PL/EN w Ustawieniach.
 
-## Instalacja
-
-Gotowe instalatory Windows publikowane są w zakładce [Releases](../../releases) tego repozytorium — instalator nie jest podpisany certyfikatem, więc Windows SmartScreen może wyświetlić ostrzeżenie przy pierwszym uruchomieniu.
-
-## Development
-
-```powershell
-npm install
-npm run dev
-```
-
-Kontrola parsera publicznej warstwy na lokalnych zapisach:
-
-```powershell
-npm run inspect:saves
-```
-
-Testy i produkcyjny build:
-
-```powershell
-npm test
-npm run build
-npm run dist
-```
-
 ## Bezpieczeństwo
 
 Tryb eksploratora otwiera pliki gry wyłącznie do odczytu i nigdy ich nie kopiuje ani nie nadpisuje — jedyną drogą wyjścia danych jest jawny eksport JSON/CSV. Renderer Electron działa z `contextIsolation`, bez dostępu do Node.js; operacje plikowe przechodzą przez wąski preload API, a każda ścieżka pliku jest weryfikowana względem wybranego katalogu zapisów.

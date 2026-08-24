@@ -11,7 +11,9 @@ function StockRow({ index, itemId, itemPath, name, count, controller }: { index:
   const removeKey = `trader-remove:${index}:${itemId}`
   const queuedCount = controller.byTargetKey.get(stockKey)
   const queuedRemove = controller.byTargetKey.get(removeKey)
-  const [value, setValue] = useState(String(queuedCount?.operation.kind === 'traderStock' ? queuedCount.operation.count : count))
+  const queuedCountValue = queuedCount?.operation.kind === 'traderStock' ? queuedCount.operation.count : undefined
+  const [value, setValue] = useState(String(queuedCountValue ?? count))
+  useEffect(() => setValue(String(queuedCountValue ?? count)), [queuedCountValue, count])
 
   if (queuedRemove) {
     return (

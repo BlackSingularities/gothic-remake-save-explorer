@@ -1,5 +1,5 @@
 import { HeartPulse } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SearchField } from '../../../components/Controls'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
@@ -16,6 +16,7 @@ function NpcRow({ npc, controller }: { npc: NpcSummary; controller: PendingEdits
   const queuedRevive = controller.byTargetKey.get(reviveKey)
   const initialRel = queuedRel?.operation.kind === 'npcRelationship' ? queuedRel.operation.relationship : npc.relationship
   const [relationship, setRelationship] = useState<NpcRelationship>(initialRel)
+  useEffect(() => setRelationship(initialRel), [initialRel])
 
   return (
     <div className="editor-item-row">

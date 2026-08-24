@@ -9,7 +9,9 @@ function ExistingItemRow({ id, name, count, controller }: { id: string; name: st
   const removeKey = `item-remove:${id}`
   const queuedCount = controller.byTargetKey.get(countKey)
   const queuedRemove = controller.byTargetKey.get(removeKey)
-  const [value, setValue] = useState(String(queuedCount?.operation.kind === 'itemCount' ? queuedCount.operation.count : count))
+  const queuedCountValue = queuedCount?.operation.kind === 'itemCount' ? queuedCount.operation.count : undefined
+  const [value, setValue] = useState(String(queuedCountValue ?? count))
+  useEffect(() => setValue(String(queuedCountValue ?? count)), [queuedCountValue, count])
 
   if (queuedRemove) {
     return (

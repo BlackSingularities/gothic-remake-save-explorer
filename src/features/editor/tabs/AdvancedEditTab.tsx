@@ -1,5 +1,5 @@
 import { Check, Search } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SegmentedControl } from '../../../components/Controls'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
@@ -11,7 +11,9 @@ type Source = 'all' | 'metadata' | 'public' | 'private'
 function EditableRow({ match, controller }: { match: TypedPropertyMatch; controller: PendingEditsController }) {
   const targetKey = `raw:${match.id}`
   const queued = controller.byTargetKey.get(targetKey)
-  const [value, setValue] = useState(queued?.operation.kind === 'rawTyped' ? queued.operation.value : match.value ?? '')
+  const queuedValue = queued?.operation.kind === 'rawTyped' ? queued.operation.value : undefined
+  const [value, setValue] = useState(queuedValue ?? match.value ?? '')
+  useEffect(() => setValue(queuedValue ?? match.value ?? ''), [queuedValue, match.value])
 
   return (
     <div className={`property-row property-row--depth-${Math.min(match.depth ?? 0, 6)}`}>

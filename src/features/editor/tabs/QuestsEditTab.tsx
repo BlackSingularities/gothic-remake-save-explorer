@@ -1,5 +1,5 @@
 import { Check } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { DeepSaveDetails, QuestEntry } from '../../../types'
 import type { PendingEditsController } from '../usePendingEdits'
 
@@ -10,7 +10,9 @@ function QuestRow({ quest, controller }: { quest: QuestEntry; controller: Pendin
   const targetKey = `quest:${quest.id}`
   const queued = controller.byTargetKey.get(targetKey)
   const queuedState = queued?.operation.kind === 'questState' ? queued.operation.state : undefined
-  const [state, setState] = useState(queuedState ?? stateLabels[quest.state] ?? 'Running')
+  const fallbackState = stateLabels[quest.state] ?? 'Running'
+  const [state, setState] = useState(queuedState ?? fallbackState)
+  useEffect(() => setState(queuedState ?? fallbackState), [queuedState, fallbackState])
 
   return (
     <div className="editor-item-row">

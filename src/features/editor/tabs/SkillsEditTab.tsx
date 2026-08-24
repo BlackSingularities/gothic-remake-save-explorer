@@ -7,7 +7,9 @@ function SkillRow({ entry, currentTier, controller }: { entry: SkillCatalogEntry
   const targetKey = `skill:${entry.base}`
   const queued = controller.byTargetKey.get(targetKey)
   const queuedTier = queued?.operation.kind === 'skill' ? queued.operation.tier : undefined
-  const [tier, setTier] = useState(queuedTier ?? (entry.tiers.includes(currentTier) ? currentTier : entry.tiers[0]))
+  const fallbackTier = entry.tiers.includes(currentTier) ? currentTier : entry.tiers[0]
+  const [tier, setTier] = useState(queuedTier ?? fallbackTier)
+  useEffect(() => setTier(queuedTier ?? fallbackTier), [queuedTier, fallbackTier])
 
   return (
     <div className="editor-item-row">

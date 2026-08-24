@@ -11,6 +11,7 @@ function AttributeField({ id, label, current, controller }: { id: string; label:
   const queued = controller.byTargetKey.get(targetKey)
   const queuedValue = queued?.operation.kind === 'attribute' ? queued.operation.value : undefined
   const [value, setValue] = useState(String(queuedValue ?? current))
+  useEffect(() => setValue(String(queuedValue ?? current)), [queuedValue, current])
 
   return (
     <div className="editor-field">
@@ -77,8 +78,10 @@ function TeleportPicker({ controller }: { controller: PendingEditsController }) 
 }
 
 export function CharacterEditTab({ details, save, controller }: { details: DeepSaveDetails; save: ParsedSave; controller: PendingEditsController }) {
-  const [name, setName] = useState(save.displayName)
   const nameQueued = controller.byTargetKey.get('saveName')
+  const queuedName = nameQueued?.operation.kind === 'saveName' ? nameQueued.operation.value : undefined
+  const [name, setName] = useState(queuedName ?? save.displayName)
+  useEffect(() => setName(queuedName ?? save.displayName), [queuedName, save.displayName])
 
   return (
     <div className="deep-tab-panel">

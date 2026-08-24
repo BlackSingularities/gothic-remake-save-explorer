@@ -5,6 +5,7 @@ export interface TabDef<T extends string> {
   label: string
   icon: ReactNode
   badge?: number
+  badgePending?: boolean
 }
 
 export function TabBar<T extends string>({
@@ -15,7 +16,7 @@ export function TabBar<T extends string>({
       {tabs.map((tab) => (
         <button key={tab.id} className={active === tab.id ? 'is-active' : ''} onClick={() => onChange(tab.id)}>
           {tab.icon} {tab.label}
-          {tab.badge !== undefined && <b>{tab.badge}</b>}
+          {tab.badge !== undefined && <b className={tab.badgePending ? 'tab-badge--pending' : undefined}>{tab.badge}</b>}
         </button>
       ))}
     </div>

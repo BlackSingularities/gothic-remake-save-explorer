@@ -19,20 +19,22 @@ function NpcRow({ npc, controller }: { npc: NpcSummary; controller: PendingEdits
   useEffect(() => setRelationship(initialRel), [initialRel])
 
   return (
-    <div className="editor-item-row">
+    <form
+      className="editor-item-row"
+      onSubmit={(event) => {
+        event.preventDefault()
+        controller.addEdit(relKey, { kind: 'npcRelationship', id: npc.id, name: npc.name, relationship }, `${npc.name}: relacja → ${relationshipLabels[relationship]}`)
+      }}
+    >
       <strong>{npc.name}</strong>
       <select value={relationship} onChange={(event) => setRelationship(event.target.value as NpcRelationship)}>
         {relationshipOptions.map((value) => <option key={value} value={value}>{relationshipLabels[value]}</option>)}
       </select>
-      <button
-        className="button button--secondary"
-        onClick={() => controller.addEdit(relKey, { kind: 'npcRelationship', id: npc.id, name: npc.name, relationship }, `${npc.name}: relacja → ${relationshipLabels[relationship]}`)}
-      >
-        Zastosuj
-      </button>
+      <button className="button button--secondary" type="submit">Zastosuj</button>
       {npc.isDead && (
         <button
           className="icon-button"
+          type="button"
           title="Wskrześ"
           disabled={Boolean(queuedRevive)}
           onClick={() => controller.addEdit(reviveKey, { kind: 'npcRevive', id: npc.id, name: npc.name }, `Wskrześ: ${npc.name}`)}
@@ -42,7 +44,7 @@ function NpcRow({ npc, controller }: { npc: NpcSummary; controller: PendingEdits
       )}
       {queuedRel && <small className="editor-field__queued">w kolejce: {relationshipLabels[queuedRel.operation.kind === 'npcRelationship' ? queuedRel.operation.relationship : relationship]}</small>}
       {queuedRevive && <small className="editor-field__queued">w kolejce: wskrzeszenie</small>}
-    </div>
+    </form>
   )
 }
 

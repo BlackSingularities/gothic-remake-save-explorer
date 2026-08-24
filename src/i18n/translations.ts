@@ -4,7 +4,6 @@ export const pl = {
 
   'nav.explorer': 'Eksplorator',
   'nav.stats': 'Statystyki',
-  'nav.editor': 'Edytor',
   'nav.settings': 'Ustawienia',
 
   'common.search': 'Szukaj',
@@ -35,7 +34,6 @@ export const en: Record<TranslationKey, string> = {
 
   'nav.explorer': 'Explorer',
   'nav.stats': 'Statistics',
-  'nav.editor': 'Editor',
   'nav.settings': 'Settings',
 
   'common.search': 'Search',

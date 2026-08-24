@@ -13,22 +13,19 @@ function AttributeField({ id, label, current, controller }: { id: string; label:
   const [value, setValue] = useState(String(queuedValue ?? current))
   useEffect(() => setValue(String(queuedValue ?? current)), [queuedValue, current])
 
+  const apply = () => {
+    const parsed = Number(value)
+    if (!Number.isFinite(parsed)) return
+    controller.addEdit(targetKey, { kind: 'attribute', id, label, value: parsed, previous: current }, `${label}: ${current} → ${parsed}`)
+  }
+
   return (
     <div className="editor-field">
       <span>{label}</span>
-      <div className="editor-field__row">
+      <form className="editor-field__row" onSubmit={(event) => { event.preventDefault(); apply() }}>
         <input type="number" value={value} onChange={(event) => setValue(event.target.value)} />
-        <button
-          className="button button--secondary"
-          onClick={() => {
-            const parsed = Number(value)
-            if (!Number.isFinite(parsed)) return
-            controller.addEdit(targetKey, { kind: 'attribute', id, label, value: parsed, previous: current }, `${label}: ${current} → ${parsed}`)
-          }}
-        >
-          <Check size={14} /> Zastosuj
-        </button>
-      </div>
+        <button className="button button--secondary" type="submit"><Check size={14} /> Zastosuj</button>
+      </form>
       {queuedValue !== undefined && <small className="editor-field__queued">w kolejce: {queuedValue}</small>}
     </div>
   )
@@ -88,15 +85,16 @@ export function CharacterEditTab({ details, save, controller }: { details: DeepS
       <section className="drawer-section deep-section">
         <div className="section-heading"><div><p className="eyebrow">TOŻSAMOŚĆ ZAPISU</p><h3>Nazwa nowej kopii</h3></div></div>
         <div className="editor-field">
-          <div className="editor-field__row">
+          <form
+            className="editor-field__row"
+            onSubmit={(event) => {
+              event.preventDefault()
+              controller.addEdit('saveName', { kind: 'saveName', value: name, previous: save.displayName }, `Nazwa zapisu → ${name}`)
+            }}
+          >
             <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
-            <button
-              className="button button--secondary"
-              onClick={() => controller.addEdit('saveName', { kind: 'saveName', value: name, previous: save.displayName }, `Nazwa zapisu → ${name}`)}
-            >
-              <Check size={14} /> Zastosuj
-            </button>
-          </div>
+            <button className="button button--secondary" type="submit"><Check size={14} /> Zastosuj</button>
+          </form>
           {nameQueued && <small className="editor-field__queued">w kolejce: {nameQueued.operation.kind === 'saveName' ? nameQueued.operation.value : ''}</small>}
         </div>
       </section>

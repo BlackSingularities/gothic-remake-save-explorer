@@ -1,8 +1,12 @@
+import { Check } from 'lucide-react'
 import { useState } from 'react'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
 import { formatNumber } from '../../../lib/format'
 import type { DeepSaveDetails, KnowledgeCharacterSummary, MemoryCharacterSummary, MemoryEvent, StoryData } from '../../../types'
+import type { PendingEditsController } from '../../editor/usePendingEdits'
+
+const chapterRoman = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI']
 
 function EventsBrowser({ filePath }: { filePath: string }) {
   const [character, setCharacter] = useState<string | null>(null)
@@ -69,14 +73,38 @@ function KnowledgeBrowser({ filePath }: { filePath: string }) {
   )
 }
 
-function StorySummary({ filePath }: { filePath: string }) {
+function StorySummary({ filePath, controller }: { filePath: string; controller?: PendingEditsController }) {
   const story = useAsyncResource<StoryData>(window.gothic ? () => window.gothic!.story(filePath) : null, [filePath])
+  const queued = controller?.byTargetKey.get('chapter')
+  const queuedValue = queued?.operation.kind === 'chapter' ? queued.operation.value : undefined
+  const [draft, setDraft] = useState<number | null>(null)
+
   if (!story.data) return <TabPanelState loading={story.loading} error={story.error} />
   return (
     <section className="drawer-section deep-section">
       <div className="section-heading"><div><p className="eyebrow">FABUŁA</p><h3>Stan świata</h3></div></div>
       <div className="world-grid world-grid--compact">
-        <div><span>Rozdział</span><strong>{story.data.chapter}</strong></div>
+        <div>
+          <span>Rozdział</span>
+          {controller ? (
+            <form
+              className="editor-field__row"
+              onSubmit={(event) => {
+                event.preventDefault()
+                const next = draft ?? story.data!.chapter
+                controller.addEdit('chapter', { kind: 'chapter', value: next, previous: story.data!.chapter }, `Rozdział: ${story.data!.chapter} → ${next}`)
+              }}
+            >
+              <select value={draft ?? queuedValue ?? story.data.chapter} onChange={(event) => setDraft(Number(event.target.value))}>
+                {chapterRoman.map((label, index) => <option key={index} value={index}>{index === 0 ? 'Prolog' : `Rozdział ${label}`}</option>)}
+              </select>
+              <button className="icon-button" type="submit" title="Zastosuj"><Check size={14} /></button>
+            </form>
+          ) : (
+            <strong>{story.data.chapter}</strong>
+          )}
+          {queuedValue !== undefined && <small className="editor-field__queued">w kolejce: {chapterRoman[queuedValue] || queuedValue}</small>}
+        </div>
         <div><span>Flagi fabularne</span><strong>{story.data.flags.length}</strong></div>
         <div><span>Timery scenariusza</span><strong>{story.data.timers.length}</strong></div>
         <div><span>Czas gry (silnik)</span><strong>{formatNumber(Math.round(story.data.currentGameTimeSeconds / 60))} min</strong></div>
@@ -85,7 +113,7 @@ function StorySummary({ filePath }: { filePath: string }) {
   )
 }
 
-export function WorldTab({ details, filePath }: { details: DeepSaveDetails; filePath: string }) {
+export function WorldTab({ details, filePath, controller }: { details: DeepSaveDetails; filePath: string; controller?: PendingEditsController }) {
   return (
     <div className="deep-tab-panel">
       <div className="world-grid">
@@ -94,7 +122,7 @@ export function WorldTab({ details, filePath }: { details: DeepSaveDetails; file
         <div><span>Wpisy wiedzy</span><strong>{formatNumber(details.world.knowledgeEntries)}</strong><small>dla {details.world.knowledgeCharacters} postaci</small></div>
         <div><span>Rozpakowany świat</span><strong>{(details.decoder.decompressedBytes / 1024 / 1024).toFixed(1)} MB</strong><small>{details.decoder.chunks} bloków {details.decoder.method}</small></div>
       </div>
-      <StorySummary filePath={filePath} />
+      <StorySummary filePath={filePath} controller={controller} />
       <EventsBrowser filePath={filePath} />
       <KnowledgeBrowser filePath={filePath} />
     </div>

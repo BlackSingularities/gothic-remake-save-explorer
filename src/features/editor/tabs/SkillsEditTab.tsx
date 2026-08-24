@@ -11,22 +11,18 @@ function SkillRow({ entry, currentTier, controller }: { entry: SkillCatalogEntry
   const [tier, setTier] = useState(queuedTier ?? fallbackTier)
   useEffect(() => setTier(queuedTier ?? fallbackTier), [queuedTier, fallbackTier])
 
+  const apply = () => controller.addEdit(targetKey, { kind: 'skill', base: entry.base, label: entry.label, tier, previousTier: currentTier }, `${entry.label}: ${currentTier} → ${tier}`)
+
   return (
-    <div className="editor-item-row">
+    <form className="editor-item-row" onSubmit={(event) => { event.preventDefault(); apply() }}>
       <strong>{entry.label}</strong>
       <span>{currentTier}</span>
       <select value={tier} onChange={(event) => setTier(event.target.value)}>
         {entry.tiers.map((option) => <option key={option} value={option}>{option}</option>)}
       </select>
-      <button
-        className="icon-button"
-        title="Zastosuj"
-        onClick={() => controller.addEdit(targetKey, { kind: 'skill', base: entry.base, label: entry.label, tier, previousTier: currentTier }, `${entry.label}: ${currentTier} → ${tier}`)}
-      >
-        <Check size={14} />
-      </button>
+      <button className="icon-button" type="submit" title="Zastosuj"><Check size={14} /></button>
       {queuedTier && <small className="editor-field__queued">w kolejce: {queuedTier}</small>}
-    </div>
+    </form>
   )
 }
 

@@ -1,5 +1,15 @@
+@import "@fontsource/cinzel/400.css";
+@import "@fontsource/cinzel/500.css";
+@import "@fontsource/cinzel/600.css";
+@import "@fontsource/cinzel-decorative/700.css";
+@import "@fontsource/spectral/400.css";
+@import "@fontsource/spectral/500.css";
+@import "@fontsource/spectral/600.css";
+@import "@fontsource/spectral/700.css";
+@import "@fontsource/spectral/400-italic.css";
+
 :root {
-  font-family: Bahnschrift, "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-family: "Spectral", Constantia, Georgia, serif;
   color: #e9e4d7;
   background: #090c0a;
   font-synthesis: none;
@@ -20,7 +30,8 @@
   --rust: #9c4d2c;
   --green: #7fae78;
   --danger: #c26852;
-  --serif: Constantia, "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --serif: "Cinzel", Constantia, Georgia, serif;
+  --brand: "Cinzel Decorative", "Cinzel", Constantia, Georgia, serif;
 }
 
 * { box-sizing: border-box; }
@@ -47,7 +58,7 @@ body::before {
 .sidebar::after { content: ""; position: absolute; top: 0; right: -1px; width: 1px; height: 180px; background: linear-gradient(var(--gold), transparent); opacity: .4; }
 .sidebar__brand { display: flex; align-items: center; gap: 13px; padding: 2px 8px; }
 .sidebar__brand > div:last-child { display: grid; line-height: .91; letter-spacing: .12em; }
-.sidebar__brand strong { font-family: var(--serif); font-size: 30px; font-weight: 600; }
+.sidebar__brand strong { font-family: var(--brand); font-size: 26px; font-weight: 700; letter-spacing: .02em; }
 .sidebar__brand span { color: var(--gold); font-family: var(--serif); font-size: 22px; letter-spacing: .3em; }
 .sidebar__caption { margin: 12px 8px 28px; color: var(--muted-2); font-size: 14px; letter-spacing: .16em; }
 .colony-mark { width: 46px; height: 46px; position: relative; display: grid; flex: 0 0 auto; place-items: center; color: var(--gold-bright); background: radial-gradient(circle, rgba(211, 161, 75, .16), transparent 62%); }
@@ -203,11 +214,15 @@ body::before {
 .save-view__shade { position: absolute; inset: 0; background: linear-gradient(0deg, var(--bg) 0%, rgba(13,18,15,.3) 60%, rgba(13,18,15,.55) 100%), linear-gradient(100deg, rgba(9,12,10,.65), transparent 55%); }
 .save-view__back { position: absolute; z-index: 2; top: 24px; left: clamp(24px, 3vw, 48px); display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid var(--line); border-radius: 2px; color: #d2d0c9; background: rgba(8,11,9,.55); backdrop-filter: blur(8px); cursor: pointer; font-size: 16px; font-weight: 600; letter-spacing: .04em; transition: .2s ease; }
 .save-view__back:hover { color: var(--gold-bright); border-color: rgba(211,161,75,.3); background: rgba(211,161,75,.1); }
+.save-view__edit-toggle { position: absolute; z-index: 2; top: 24px; right: clamp(24px, 3vw, 48px); display: inline-flex; align-items: center; gap: 8px; padding: 9px 16px; border: 1px solid rgba(211,161,75,.3); border-radius: 2px; color: #e5d8bf; background: rgba(211,161,75,.1); backdrop-filter: blur(8px); cursor: pointer; font-size: 16px; font-weight: 650; letter-spacing: .04em; transition: .2s ease; }
+.save-view__edit-toggle:hover { border-color: rgba(211,161,75,.5); background: rgba(211,161,75,.16); }
+.save-view__edit-toggle.is-active { color: #18130b; border-color: var(--gold); background: linear-gradient(135deg, #d8aa57, #bd8433); }
 .save-view__title { position: absolute; z-index: 2; inset: auto clamp(24px, 3vw, 48px) 34px; }
 .save-view__title p { margin: 12px 0 6px; color: var(--gold); font-size: 14px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 .save-view__title h2 { max-width: 900px; margin: 0; color: #f4eee0; font-family: var(--serif); font-size: clamp(40px, 3.2vw, 59px); font-weight: 500; line-height: 1.12; text-wrap: balance; text-shadow: 0 3px 15px #000; }
 .save-view__body { width: min(100%, 1510px); margin: 0 auto; padding: 26px clamp(24px, 3vw, 48px) 60px; }
-.save-view__panel { margin-top: 4px; }
+.save-view__panel { margin-top: 4px; padding-left: 0; border-left: 2px solid transparent; transition: .2s ease; }
+.save-view__panel.is-editing { padding-left: 16px; border-left-color: rgba(211,161,75,.35); }
 .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); border: 1px solid var(--line); }
 .detail-grid > div { min-height: 69px; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 13px 15px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .detail-grid > div:nth-child(even) { border-right: 0; }
@@ -240,6 +255,7 @@ body::before {
 .detail-tabs button:hover { color: #d6d1c6; background: rgba(255,255,255,.025); }
 .detail-tabs button.is-active { color: var(--gold-bright); background: rgba(211,161,75,.09); box-shadow: inset 0 -1px var(--gold); }
 .detail-tabs button b { min-width: 17px; padding: 2px 4px; border-radius: 8px; color: #a7a095; background: rgba(255,255,255,.06); font-size: 12px; }
+.detail-tabs button b.tab-badge--pending { color: #18130b; background: var(--gold); font-weight: 700; }
 .deep-tab-panel { animation: fadeIn .2s ease; }
 .deep-section { margin: 13px 0; }
 .attribute-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 16px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
@@ -420,12 +436,6 @@ body::before {
 .diff-list span svg { color: var(--muted-2); }
 
 /* -- editor mode ----------------------------------------------------------- */
-.editor-picker__intro { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; padding: 21px 23px; }
-.editor-picker__intro svg { flex: 0 0 auto; margin-top: 2px; color: var(--gold); }
-.editor-picker__intro h3 { margin: 0; font-family: var(--serif); font-size: 26px; font-weight: 500; }
-.editor-picker__intro p { max-width: 640px; margin: 6px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
-.editor-picker__notice { margin-bottom: 14px; padding: 10px 14px; border: 1px solid rgba(127,174,120,.25); color: #9fb39b; background: rgba(127,174,120,.06); font-size: 16px; }
-
 .editor-safety-banner { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; padding: 16px 18px; border: 1px solid rgba(211,161,75,.25); background: linear-gradient(100deg, rgba(211,161,75,.08), rgba(255,255,255,.012)); }
 .editor-safety-banner > svg { flex: 0 0 auto; color: var(--gold); margin-top: 2px; }
 .editor-safety-banner strong { display: block; margin-bottom: 5px; color: #ece6d8; font-size: 18px; }

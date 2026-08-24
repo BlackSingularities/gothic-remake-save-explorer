@@ -25,30 +25,27 @@ function StockRow({ index, itemId, itemPath, name, count, controller }: { index:
     )
   }
 
+  const apply = () => {
+    const parsed = Math.max(1, Math.round(Number(value)))
+    if (!Number.isFinite(parsed)) return
+    controller.addEdit(stockKey, { kind: 'traderStock', index, itemId, itemPath, itemName: name, count: parsed, previous: count }, `${name} u handlarza: ${count} → ${parsed}`)
+  }
+
   return (
-    <div className="editor-item-row">
+    <form className="editor-item-row" onSubmit={(event) => { event.preventDefault(); apply() }}>
       <strong>{name}</strong>
       <input type="number" min={1} value={value} onChange={(event) => setValue(event.target.value)} />
+      <button className="icon-button" type="submit" title="Zastosuj ilość"><Check size={14} /></button>
       <button
         className="icon-button"
-        title="Zastosuj ilość"
-        onClick={() => {
-          const parsed = Math.max(1, Math.round(Number(value)))
-          if (!Number.isFinite(parsed)) return
-          controller.addEdit(stockKey, { kind: 'traderStock', index, itemId, itemPath, itemName: name, count: parsed, previous: count }, `${name} u handlarza: ${count} → ${parsed}`)
-        }}
-      >
-        <Check size={14} />
-      </button>
-      <button
-        className="icon-button"
+        type="button"
         title="Usuń pozycję ze stoku"
         onClick={() => controller.addEdit(removeKey, { kind: 'traderItemRemove', index, itemPath, itemName: name }, `Usuń ze stoku: ${name}`)}
       >
         <Trash2 size={14} />
       </button>
       {queuedCount && <small className="editor-field__queued">w kolejce: {queuedCount.operation.kind === 'traderStock' ? queuedCount.operation.count : ''}</small>}
-    </div>
+    </form>
   )
 }
 

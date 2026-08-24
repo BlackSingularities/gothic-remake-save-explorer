@@ -1,8 +1,7 @@
-import { Check, FolderOpen, LayoutGrid, Menu, RefreshCcw, ScrollText, Settings, Shield, Wrench, X } from 'lucide-react'
+import { Check, FolderOpen, LayoutGrid, Menu, RefreshCcw, ScrollText, Settings, Shield, X } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BrandMark, StatusDot } from './components/Brand'
 import { demoScan } from './demo'
-import { EditorPage } from './features/editor/EditorPage'
 import { ExplorerPage } from './features/explorer/ExplorerPage'
 import { SaveDetailView } from './features/explorer/SaveDetailView'
 import { SettingsPage } from './features/settings/SettingsPage'
@@ -10,13 +9,12 @@ import { StatsPage } from './features/stats/StatsPage'
 import { LanguageProvider, useT } from './i18n/LanguageContext'
 import type { ParsedSave, ScanResult } from './types'
 
-type Page = 'explorer' | 'stats' | 'editor' | 'settings'
+type Page = 'explorer' | 'stats' | 'settings'
 type ProfileFilter = 'all' | number
 
 const pageTitleKey = {
   explorer: 'nav.explorer',
   stats: 'nav.stats',
-  editor: 'nav.editor',
   settings: 'nav.settings',
 } as const
 
@@ -110,7 +108,6 @@ function AppShell() {
         <nav>
           <button className={page === 'explorer' ? 'is-active' : ''} onClick={() => navigate('explorer')}><LayoutGrid size={18} /><span>{t('nav.explorer')}</span><b>{scan?.saves.length || 0}</b><i /></button>
           <button className={page === 'stats' ? 'is-active' : ''} onClick={() => navigate('stats')}><ScrollText size={18} /><span>{t('nav.stats')}</span><i /></button>
-          <button className={page === 'editor' ? 'is-active' : ''} onClick={() => navigate('editor')}><Wrench size={18} /><span>{t('nav.editor')}</span><i /></button>
           <button className={page === 'settings' ? 'is-active' : ''} onClick={() => navigate('settings')}><Settings size={18} /><span>{t('nav.settings')}</span><i /></button>
         </nav>
         <div className="sidebar__watcher">
@@ -144,14 +141,20 @@ function AppShell() {
             <>
               {page === 'explorer' && <ExplorerPage scan={scan} saves={saves} onOpenSave={setSelectedSave} />}
               {page === 'stats' && <StatsPage saves={saves} />}
-              {page === 'editor' && <EditorPage scan={scan} saves={saves} />}
               {page === 'settings' && <SettingsPage scan={scan} onChoose={() => void chooseDirectory()} onOpenFolder={() => void window.gothic?.openDirectory()} onExport={(format) => void exportData(format)} />}
             </>
           )}
         </div>
       </main>
 
-      {selectedSave && <SaveDetailView save={selectedSave} onClose={() => setSelectedSave(null)} />}
+      {selectedSave && scan && (
+        <SaveDetailView
+          save={selectedSave}
+          scan={scan}
+          onClose={() => setSelectedSave(null)}
+          onCommitted={(slotName) => notify('Dodano nowy zapis', slotName)}
+        />
+      )}
       {toast && (
         <div className={`toast${toast.error ? ' toast--error' : ''}`}>
           <span>{toast.error ? <X size={16} /> : <Check size={16} />}</span>

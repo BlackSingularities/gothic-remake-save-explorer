@@ -20,16 +20,16 @@ function EditableRow({ match, controller }: { match: TypedPropertyMatch; control
       <span className="property-row__type">{match.type}</span>
       <span className="property-row__display">{match.display}</span>
       {match.editable ? (
-        <div className="editor-field__row">
+        <form
+          className="editor-field__row"
+          onSubmit={(event) => {
+            event.preventDefault()
+            controller.addEdit(targetKey, { kind: 'rawTyped', path: match.path, display: match.display, value, valueType: match.type }, `${match.display} → ${value}`)
+          }}
+        >
           <input value={value} onChange={(event) => setValue(event.target.value)} />
-          <button
-            className="icon-button"
-            title="Zastosuj"
-            onClick={() => controller.addEdit(targetKey, { kind: 'rawTyped', path: match.path, display: match.display, value, valueType: match.type }, `${match.display} → ${value}`)}
-          >
-            <Check size={14} />
-          </button>
-        </div>
+          <button className="icon-button" type="submit" title="Zastosuj"><Check size={14} /></button>
+        </form>
       ) : (
         <span className="property-row__value">{match.value ?? '—'}</span>
       )}

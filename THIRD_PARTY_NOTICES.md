@@ -22,6 +22,12 @@ Z tego samego projektu (katalog `apps/save-editor/assets` w jego repozytorium) p
 
 Z tego projektu pochodzi bundlowany plik `g1r_editor_localization.json` (angielskie i niemieckie nazwy przedmiotów, umiejętności, questów i NPC), używany jako zapasowe źródło nazw, gdy gra nie jest zainstalowana lokalnie. Podejście do bezpiecznej edycji i ponownego zapisu pliku zapisu (walidacja przed nadpisaniem, praca na kopii) było też punktem odniesienia przy projektowaniu trybu edytora tej aplikacji.
 
+## Czcionki
+
+- Cinzel, Cinzel Decorative, Spectral — projekty czcionek udostępnione na licencji SIL Open Font License 1.1, dystrybuowane w aplikacji jako pakiety `@fontsource/*`.
+
+Czcionki są dołączone do instalatora i ładowane lokalnie — aplikacja nie łączy się z żadnym zewnętrznym serwerem czcionek (np. Google Fonts) w czasie działania.
+
 ## Lokalizacja gry
 
 Gdy Gothic 1 Remake jest zainstalowany lokalnie, aplikacja może opcjonalnie odczytać własny, zaszyfrowany plik lokalizacji gry (`AlkimiaLocalization_00000000.lcache`), aby pokazać autentyczne, wielojęzyczne (w tym polskie) nazwy przedmiotów, NPC, questów i lokacji zamiast angielskich odpowiedników. Format i klucz odszyfrowujący zostały udokumentowane przez projekt GORE (patrz wyżej) — dane samej gry pozostają własnością Alkimia Interactive / THQ Nordic i nie są rozpowszechniane wraz z tą aplikacją; plik jest czytany wyłącznie na komputerze użytkownika, tylko do odczytu.

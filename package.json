@@ -1,0 +1,81 @@
+{
+  "name": "gothic-remake-save-explorer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Nieoficjalny eksplorator zapisów Gothic 1 Remake",
+  "author": "Gothic Remake Save Explorer",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "prebuild": "node build-icon.mjs",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "inspect:saves": "tsx electron/inspect-saves.ts",
+    "dist": "npm run build && electron-builder --win nsis",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "koffi": "^2.16.3",
+    "lucide-react": "^0.468.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.3",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^6.0.2",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.15.3",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.35.3",
+    "tsx": "^4.20.6",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.2",
+    "vite-plugin-electron": "^1.1.1",
+    "vitest": "^4.1.11"
+  },
+  "build": {
+    "appId": "pl.gothicremakesaveexplorer.app",
+    "productName": "Gothic Remake Save Explorer",
+    "artifactName": "Gothic-Remake-Save-Explorer-Setup-${version}.${ext}",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "THIRD_PARTY_NOTICES.md",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "vendor/goresave",
+        "to": "goresave",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "electron/goresave/catalogs",
+        "to": "catalogs",
+        "filter": [
+          "**/*.json"
+        ]
+      }
+    ],
+    "win": {
+      "icon": "assets/icon.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false,
+      "createDesktopShortcut": true,
+      "shortcutName": "Gothic Remake Save Explorer"
+    }
+  }
+}

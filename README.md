@@ -20,7 +20,7 @@ Projekt nie jest afiliowany z Alkimia Interactive ani THQ Nordic.
 
 ## Tryb edytora
 
-Osobna sekcja aplikacji do świadomej edycji zapisu: atrybuty, ekwipunek (zmiana ilości, dodawanie, usuwanie), umiejętności, stan zadań, relacje z NPC (w tym wskrzeszanie), wybaczanie przestępstw frakcjom.
+Osobna sekcja aplikacji do świadomej edycji zapisu: atrybuty, teleportacja (wyszukiwarka miejsc), ekwipunek (zmiana ilości, dodawanie, usuwanie), umiejętności, stan zadań, relacje z NPC (w tym wskrzeszanie), stok handlarzy, wybaczanie przestępstw frakcjom, rozdział fabuły, oraz tryb zaawansowany do edycji dowolnej surowej właściwości zapisu.
 
 Każda zmiana trafia do kolejki, a zapis odbywa się dopiero po kliknięciu „Zapisz jako nowy zapis”:
 

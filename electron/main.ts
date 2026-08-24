@@ -3,7 +3,7 @@ import { promises as fs, watch, type FSWatcher } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { EditOperation, ParsedSave, ScanResult } from '../src/types'
-import { searchItemCatalog } from './goresave/catalogs'
+import { searchItemCatalog, searchLocationSpots } from './goresave/catalogs'
 import {
   clearDeepSaveCache,
   getGlossary,
@@ -199,6 +199,13 @@ app.whenReady().then(async () => {
       return { success: true, data: await searchItemCatalog(query) }
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Nie udało się przeszukać katalogu przedmiotów' }
+    }
+  })
+  ipcMain.handle('editor:location-catalog', async (_event, query: string) => {
+    try {
+      return { success: true, data: await searchLocationSpots(query) }
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Nie udało się przeszukać katalogu lokacji' }
     }
   })
   ipcMain.handle('editor:commit', async (_event, filePath: string, edits: EditOperation[], targetProfileId: number) => {

@@ -191,6 +191,7 @@ export interface TraderSummary {
 
 export interface TraderStockItem {
   id: string
+  path: string
   name: string
   count: number
   defaultCount: number
@@ -331,6 +332,12 @@ export type EditOperation =
   | { kind: 'npcRelationship'; id: string; name: string; relationship: NpcRelationship }
   | { kind: 'factionForgive'; guild: string; label: string }
   | { kind: 'saveName'; value: string; previous: string }
+  | { kind: 'position'; x: number; y: number; z: number; yaw: number; label: string }
+  | { kind: 'chapter'; value: number; previous: number }
+  | { kind: 'traderStock'; index: number; itemId: string; itemPath: string; itemName: string; count: number; previous: number }
+  | { kind: 'traderItemAdd'; index: number; itemPath: string; itemName: string; count: number }
+  | { kind: 'traderItemRemove'; index: number; itemPath: string; itemName: string }
+  | { kind: 'rawTyped'; path: string[]; display: string; value: string; valueType: string }
 
 export interface PendingEdit {
   editId: string
@@ -374,6 +381,15 @@ export interface CatalogItemOption {
   category: string
 }
 
+export interface LocationSpotOption {
+  name: string
+  area: string
+  x: number
+  y: number
+  z: number
+  yaw: number
+}
+
 export interface CompanionApi {
   scan: () => Promise<ScanResult>
   chooseDirectory: () => Promise<ScanResult | null>
@@ -396,5 +412,6 @@ export interface CompanionApi {
   editorCheckCodec: () => Promise<ApiResult<CodecStatus>>
   editorSkillCatalog: () => Promise<ApiResult<SkillCatalogEntry[]>>
   editorItemCatalog: (query: string) => Promise<ApiResult<CatalogItemOption[]>>
+  editorLocationCatalog: (query: string) => Promise<ApiResult<LocationSpotOption[]>>
   editorCommit: (filePath: string, edits: EditOperation[], targetProfileId: number) => Promise<EditorCommitResult>
 }

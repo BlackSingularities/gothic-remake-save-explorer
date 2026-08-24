@@ -1,7 +1,8 @@
-import { Check } from 'lucide-react'
-import { useState } from 'react'
+import { Check, MapPinned } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { SearchField } from '../../../components/Controls'
 import type { PendingEditsController } from '../usePendingEdits'
-import type { DeepSaveDetails, ParsedSave } from '../../../types'
+import type { DeepSaveDetails, LocationSpotOption, ParsedSave } from '../../../types'
 
 const editableAttributes = ['Health', 'MaxHealth', 'Mana', 'MaxMana', 'Strength', 'Dexterity', 'Level', 'Experience']
 
@@ -28,6 +29,49 @@ function AttributeField({ id, label, current, controller }: { id: string; label:
         </button>
       </div>
       {queuedValue !== undefined && <small className="editor-field__queued">w kolejce: {queuedValue}</small>}
+    </div>
+  )
+}
+
+function TeleportPicker({ controller }: { controller: PendingEditsController }) {
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState<LocationSpotOption[]>([])
+  const queued = controller.byTargetKey.get('position')
+
+  useEffect(() => {
+    let active = true
+    if (!window.gothic || !query) {
+      setResults([])
+      return
+    }
+    void window.gothic.editorLocationCatalog(query).then((result) => {
+      if (active && result.success && result.data) setResults(result.data)
+    })
+    return () => { active = false }
+  }, [query])
+
+  return (
+    <div className="editor-add-item">
+      <SearchField value={query} onChange={setQuery} placeholder="Szukaj miejsca (np. Stary Obóz, Kuźnia)…" />
+      {queued && queued.operation.kind === 'position' && <p className="tab-note">W kolejce: {queued.summary}</p>}
+      <div className="editor-add-item__results">
+        {results.map((spot, index) => (
+          <button
+            key={`${spot.name}-${index}`}
+            className="editor-item-row"
+            onClick={() => controller.addEdit(
+              'position',
+              { kind: 'position', x: spot.x, y: spot.y, z: spot.z, yaw: spot.yaw, label: spot.name },
+              `Teleportacja → ${spot.name} (${spot.area})`,
+            )}
+          >
+            <MapPinned size={14} />
+            <strong>{spot.name}</strong>
+            <span>{spot.area}</span>
+          </button>
+        ))}
+        {!results.length && query && <div className="inline-empty">Brak wyników</div>}
+      </div>
     </div>
   )
 }
@@ -62,6 +106,15 @@ export function CharacterEditTab({ details, save, controller }: { details: DeepS
             return <AttributeField key={id} id={id} label={attribute.label} current={attribute.current} controller={controller} />
           })}
         </div>
+      </section>
+      <section className="drawer-section deep-section">
+        <div className="section-heading"><div><p className="eyebrow">POZYCJA W ŚWIECIE</p><h3>Teleportacja</h3></div></div>
+        {details.character.position && (
+          <p className="tab-note">
+            Obecnie: X {Math.round(details.character.position.x)} · Y {Math.round(details.character.position.y)} · Z {Math.round(details.character.position.z)}
+          </p>
+        )}
+        <TeleportPicker controller={controller} />
       </section>
     </div>
   )

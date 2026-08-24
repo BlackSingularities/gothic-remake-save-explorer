@@ -51,7 +51,7 @@ export function SettingsPage({
         </div>
       </div>
 
-      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>wersja 1.0.1 · nieoficjalna aplikacja towarzysząca</span></div></div>
+      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>wersja 1.0.2 · nieoficjalna aplikacja towarzysząca</span></div></div>
     </section>
   )
 }

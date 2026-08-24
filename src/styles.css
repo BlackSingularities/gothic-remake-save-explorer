@@ -346,6 +346,7 @@ body::before {
 .trader-list { display: grid; gap: 6px; margin-top: 12px; }
 .trader-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 14px; padding: 12px 14px; border: 1px solid var(--line); color: inherit; background: rgba(255,255,255,.01); text-align: left; cursor: pointer; font-size: 16px; transition: .15s ease; }
 .trader-row:hover { border-color: var(--line-strong); background: rgba(255,255,255,.025); }
+.trader-row.is-active { border-color: rgba(211,161,75,.35); background: rgba(211,161,75,.06); }
 .trader-row strong { color: #d9d5ca; }
 .trader-row span { display: flex; align-items: center; gap: 5px; color: var(--muted-2); font-size: 14px; }
 .trader-row b { color: var(--gold); font-size: 12px; letter-spacing: .08em; }
@@ -443,7 +444,9 @@ body::before {
 .editor-field-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 24px; }
 
 .editor-item-list { display: grid; gap: 6px; margin-top: 12px; max-height: 560px; overflow-y: auto; }
-.editor-item-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--line); background: rgba(255,255,255,.01); font-size: 16px; }
+.editor-item-row { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--line); color: inherit; background: rgba(255,255,255,.01); text-align: left; font-size: 16px; }
+button.editor-item-row { cursor: pointer; transition: .15s ease; }
+button.editor-item-row:hover { border-color: var(--line-strong); background: rgba(255,255,255,.025); }
 .editor-item-row.is-removed { opacity: .55; border-color: rgba(194,104,82,.25); }
 .editor-item-row strong { overflow: hidden; color: #d1cec5; font-weight: 550; text-overflow: ellipsis; white-space: nowrap; }
 .editor-item-row code { overflow: hidden; color: #545c55; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }

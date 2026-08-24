@@ -386,7 +386,13 @@ async function mapTraderStock(items: JsonRecord[]): Promise<TraderStockItem[]> {
   const rawItems = items.filter((item) => stringValue(item.id))
   return Promise.all(rawItems.map(async (item): Promise<TraderStockItem> => {
     const id = stringValue(item.id)
-    return { id, name: itemNames[id] || await resolveItemName(id), count: Math.max(0, numberValue(item.count)), defaultCount: 0 }
+    return {
+      id,
+      path: stringValue(item.path) || id,
+      name: itemNames[id] || await resolveItemName(id),
+      count: Math.max(0, numberValue(item.count)),
+      defaultCount: 0,
+    }
   }))
 }
 

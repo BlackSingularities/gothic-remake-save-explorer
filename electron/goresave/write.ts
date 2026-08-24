@@ -6,11 +6,20 @@ import type { EditOperation, EditorCommitResult, EditorStepResult, CodecStatus, 
 import { asRecord, executeCore, stringValue, type JsonRecord } from './client'
 import { clearDeepSaveCache } from './read'
 
-// Structural edits (add/remove an inventory item, revive an NPC, change a relationship) can shift
-// array indices — the core refuses to combine them with anything else in the same `write_save`
-// batch. Everything else (attribute/skill/quest-state/faction edits) is a plain value overwrite
-// and can safely share one batch. See research notes: gore-save write-path audit.
-const SOLO_KINDS = new Set<EditOperation['kind']>(['itemAdd', 'itemRemove', 'npcRevive', 'npcRelationship'])
+// Structural edits (add/remove an inventory or trader item, revive an NPC, change a relationship)
+// can shift array indices — the core refuses to combine them with anything else in the same
+// `write_save` batch. `story.apply` must additionally be the ONLY edit in its batch (it CAS-checks
+// every story id against the pre-batch snapshot). Everything else (attribute/skill/quest-state/
+// faction/position edits) is a plain value overwrite and can safely share one batch. See research
+// notes: gore-save write-path audit.
+const SOLO_KINDS = new Set<EditOperation['kind']>(['itemAdd', 'itemRemove', 'npcRevive', 'npcRelationship', 'traderItemAdd', 'traderItemRemove', 'chapter'])
+
+function coerceRawValue(valueType: string, raw: string): number | boolean | string {
+  if (valueType === 'IntProperty' || valueType === 'Int64Property') return Math.trunc(Number(raw))
+  if (valueType === 'FloatProperty' || valueType === 'DoubleProperty') return Number(raw)
+  if (valueType === 'BoolProperty') return raw.trim().toLowerCase() === 'true'
+  return raw
+}
 
 function toApiEdit(operation: EditOperation): { path: string; value: JsonRecord | string } {
   switch (operation.kind) {
@@ -34,6 +43,21 @@ function toApiEdit(operation: EditOperation): { path: string; value: JsonRecord 
       return { path: 'private.factions.forgive', value: { guild: operation.guild } }
     case 'saveName':
       return { path: 'public.m_PlayerSaveName', value: operation.value }
+    case 'position':
+      return { path: 'private.player.setTransform', value: { location: { x: operation.x, y: operation.y, z: operation.z }, rotation: { pitch: 0, yaw: operation.yaw, roll: 0 } } }
+    case 'chapter':
+      return {
+        path: 'private.story.apply',
+        value: { changes: [{ id: 'Chapter', present: true, rawValue: operation.value, expected: { stored: true, rawValue: operation.previous } }] },
+      }
+    case 'traderStock':
+      return { path: 'private.traders.setStock', value: { index: operation.index, path: operation.itemPath, count: operation.count } }
+    case 'traderItemAdd':
+      return { path: 'private.traders.addItem', value: { index: operation.index, path: operation.itemPath, count: operation.count } }
+    case 'traderItemRemove':
+      return { path: 'private.traders.removeItem', value: { index: operation.index, path: operation.itemPath } }
+    case 'rawTyped':
+      return { path: 'private.typed.setValue', value: { path: operation.path, value: coerceRawValue(operation.valueType, operation.value) } }
   }
 }
 

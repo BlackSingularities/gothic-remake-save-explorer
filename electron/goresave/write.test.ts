@@ -7,16 +7,24 @@ const itemCount: EditOperation = { kind: 'itemCount', id: 'ItMi_Orenugget', name
 const revive: EditOperation = { kind: 'npcRevive', id: 'NPC-1', name: 'Test' }
 const relationship: EditOperation = { kind: 'npcRelationship', id: 'NPC-2', name: 'Test 2', relationship: 'friend' }
 const itemAdd: EditOperation = { kind: 'itemAdd', id: '/Script/Angelscript.ItFo_Cheese', name: 'Ser', count: 1 }
+const chapter: EditOperation = { kind: 'chapter', value: 3, previous: 2 }
+const traderStock: EditOperation = { kind: 'traderStock', index: 0, itemId: 'ItMi_Joint_01', itemPath: '/Script/Angelscript.ItMi_Joint_01', itemName: 'Skręt', count: 5, previous: 1 }
+const traderAdd: EditOperation = { kind: 'traderItemAdd', index: 0, itemPath: '/Script/Angelscript.ItFo_Cheese', itemName: 'Ser', count: 1 }
 
 describe('planBatches', () => {
   it('combines value-only edits into a single batch', () => {
-    const batches = planBatches([attribute, itemCount])
-    expect(batches).toEqual([[attribute, itemCount]])
+    const batches = planBatches([attribute, itemCount, traderStock])
+    expect(batches).toEqual([[attribute, itemCount, traderStock]])
   })
 
   it('isolates structural edits into their own batch each', () => {
     const batches = planBatches([attribute, revive, relationship, itemAdd])
     expect(batches).toEqual([[attribute], [revive], [relationship], [itemAdd]])
+  })
+
+  it('isolates chapter (story.apply) and trader add/remove edits too', () => {
+    const batches = planBatches([attribute, chapter, traderAdd])
+    expect(batches).toEqual([[attribute], [chapter], [traderAdd]])
   })
 
   it('returns nothing for an empty edit list', () => {

@@ -175,6 +175,33 @@ export async function resolveNearestArea(x: number, y: number, z: number): Promi
   return resolveAreaLabel(nearest.a)
 }
 
+export interface LocationSpotOption {
+  name: string
+  area: string
+  x: number
+  y: number
+  z: number
+  yaw: number
+}
+
+/** Freepoints the editor can offer as teleport targets — same catalog used for the
+ * nearest-area lookup, exposed here as a name-searchable list of concrete coordinates. */
+export async function searchLocationSpots(query: string, limit = 60): Promise<LocationSpotOption[]> {
+  await ensureCatalogs()
+  const needle = query.trim().toLowerCase()
+  const spots = locationCatalog?.spots || []
+  const matches = needle ? spots.filter((spot) => spot.n.toLowerCase().includes(needle)) : spots.slice(0, limit)
+  const areaById = new Map((locationCatalog?.areas || []).map((area) => [area.id, area.label]))
+  return matches.slice(0, limit).map((spot) => ({
+    name: prettify(spot.n.replace(/^FP_/, '')),
+    area: areaById.get(spot.a) || spot.a || 'Nieznana',
+    x: spot.x,
+    y: spot.y,
+    z: spot.z,
+    yaw: spot.w,
+  }))
+}
+
 export interface CatalogItemOption {
   id: string
   path: string

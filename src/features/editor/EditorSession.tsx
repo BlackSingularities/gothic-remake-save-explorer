@@ -1,18 +1,21 @@
-import { Archive, ArrowLeft, ScrollText, Shield, SlidersHorizontal, Sword, Users, X } from 'lucide-react'
+import { Archive, ArrowLeft, Coins, Database, ScrollText, Shield, SlidersHorizontal, Sword, Users, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { TabDef } from '../../components/Tabs'
 import { TabBar } from '../../components/Tabs'
 import type { DeepSaveDetails, ParsedSave, ScanResult } from '../../types'
+import { AdvancedEditTab } from './tabs/AdvancedEditTab'
 import { CharacterEditTab } from './tabs/CharacterEditTab'
 import { FactionsEditTab } from './tabs/FactionsEditTab'
 import { InventoryEditTab } from './tabs/InventoryEditTab'
 import { NpcEditTab } from './tabs/NpcEditTab'
 import { QuestsEditTab } from './tabs/QuestsEditTab'
 import { SkillsEditTab } from './tabs/SkillsEditTab'
+import { StoryEditTab } from './tabs/StoryEditTab'
+import { TradersEditTab } from './tabs/TradersEditTab'
 import { PendingEditsPanel } from './PendingEditsPanel'
 import { usePendingEdits } from './usePendingEdits'
 
-type EditorTab = 'character' | 'inventory' | 'skills' | 'quests' | 'npcs' | 'factions'
+type EditorTab = 'character' | 'inventory' | 'skills' | 'quests' | 'npcs' | 'traders' | 'factions' | 'story' | 'advanced'
 
 const SAFETY_BANNER_KEY = 'gothic-save-explorer.editor.safety-acknowledged'
 
@@ -77,7 +80,10 @@ export function EditorSession({ save, scan, onClose, onCommitted }: { save: Pars
     { id: 'skills', label: 'Umiejętności', icon: <SlidersHorizontal size={14} /> },
     { id: 'quests', label: 'Zadania', icon: <ScrollText size={14} /> },
     { id: 'npcs', label: 'NPC', icon: <Users size={14} /> },
+    { id: 'traders', label: 'Handlarze', icon: <Coins size={14} /> },
     { id: 'factions', label: 'Frakcje', icon: <Shield size={14} /> },
+    { id: 'story', label: 'Fabuła', icon: <Database size={14} /> },
+    { id: 'advanced', label: 'Zaawansowane', icon: <SlidersHorizontal size={14} /> },
   ]
 
   return (
@@ -104,7 +110,10 @@ export function EditorSession({ save, scan, onClose, onCommitted }: { save: Pars
               {tab === 'skills' && <SkillsEditTab details={details} controller={controller} />}
               {tab === 'quests' && <QuestsEditTab details={details} controller={controller} />}
               {tab === 'npcs' && <NpcEditTab filePath={save.filePath} controller={controller} />}
+              {tab === 'traders' && <TradersEditTab filePath={save.filePath} controller={controller} />}
               {tab === 'factions' && <FactionsEditTab details={details} controller={controller} />}
+              {tab === 'story' && <StoryEditTab filePath={save.filePath} controller={controller} />}
+              {tab === 'advanced' && <AdvancedEditTab filePath={save.filePath} controller={controller} />}
             </div>
             <PendingEditsPanel save={save} scan={scan} controller={controller} onCommitted={onCommitted} />
           </div>

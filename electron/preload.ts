@@ -22,6 +22,7 @@ const api: CompanionApi = {
   editorCheckCodec: () => ipcRenderer.invoke('editor:check-codec'),
   editorSkillCatalog: () => ipcRenderer.invoke('editor:skill-catalog'),
   editorItemCatalog: (query) => ipcRenderer.invoke('editor:item-catalog', query),
+  editorLocationCatalog: (query) => ipcRenderer.invoke('editor:location-catalog', query),
   editorCommit: (filePath, edits, targetProfileId) => ipcRenderer.invoke('editor:commit', filePath, edits, targetProfileId),
   onSavesChanged: (callback) => {
     const listener = () => callback()

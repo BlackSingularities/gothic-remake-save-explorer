@@ -74,14 +74,11 @@ body::before {
 .sidebar nav button i { position: absolute; left: 0; top: 8px; bottom: 8px; width: 2px; background: var(--gold); opacity: 0; box-shadow: 0 0 14px var(--gold); }
 .sidebar nav button.is-active i { opacity: 1; }
 .sidebar nav button b { margin-left: auto; min-width: 23px; height: 20px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 20px; color: var(--muted); font-size: 16px; font-weight: 600; }
-.sidebar__watcher { margin-top: auto; padding: 15px 14px; border: 1px solid var(--line); background: rgba(255, 255, 255, .015); }
-.sidebar__watcher > div { display: flex; align-items: center; gap: 9px; color: #b7beb5; font-size: 18px; font-weight: 600; }
-.sidebar__watcher p { margin: 8px 0 0 23px; color: var(--muted-2); font-size: 16px; line-height: 1.5; }
 .status-dot { position: relative; width: 14px; height: 14px; display: inline-grid; flex: 0 0 auto; place-items: center; border-radius: 50%; border: 1px solid #4a504b; }
 .status-dot > span { width: 4px; height: 4px; border-radius: 50%; background: #5a605b; }
 .status-dot--active { border-color: rgba(127, 174, 120, .36); }
 .status-dot--active > span { background: var(--green); box-shadow: 0 0 9px var(--green); }
-.sidebar__footer { display: flex; gap: 10px; align-items: center; margin: 15px 7px 0; color: #58605a; font-size: 13px; letter-spacing: .14em; line-height: 1.5; }
+.sidebar__footer { display: flex; gap: 10px; align-items: center; margin: auto 7px 0; color: #58605a; font-size: 13px; letter-spacing: .14em; line-height: 1.5; }
 .sidebar__footer small { color: #3f4641; letter-spacing: 0; font-size: 14px; }
 
 .main-content { width: calc(100% - 246px); min-height: 100vh; margin-left: 246px; }

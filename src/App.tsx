@@ -1,6 +1,6 @@
 import { Check, FolderOpen, LayoutGrid, Menu, RefreshCcw, ScrollText, Settings, Shield, X } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { BrandMark, StatusDot } from './components/Brand'
+import { BrandMark } from './components/Brand'
 import { demoScan } from './demo'
 import { ExplorerPage } from './features/explorer/ExplorerPage'
 import { SaveDetailView } from './features/explorer/SaveDetailView'
@@ -110,10 +110,6 @@ function AppShell() {
           <button className={page === 'stats' ? 'is-active' : ''} onClick={() => navigate('stats')}><ScrollText size={18} /><span>{t('nav.stats')}</span><i /></button>
           <button className={page === 'settings' ? 'is-active' : ''} onClick={() => navigate('settings')}><Settings size={18} /><span>{t('nav.settings')}</span><i /></button>
         </nav>
-        <div className="sidebar__watcher">
-          <div><StatusDot active={Boolean(scan?.detected)} /><span>{scan?.detected ? 'Strażnik aktywny' : 'Brak połączenia'}</span></div>
-          <p>Monitoring zapisów w czasie rzeczywistym</p>
-        </div>
         <div className="sidebar__footer"><Shield size={14} /><span>TYLKO ODCZYT<br /><small>Pliki gry są bezpieczne</small></span></div>
       </aside>
       {sidebarOpen && <button className="sidebar-scrim" aria-label="Zamknij menu" onClick={() => setSidebarOpen(false)} />}

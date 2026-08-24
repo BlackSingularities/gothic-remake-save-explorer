@@ -354,7 +354,7 @@ body::before {
 .npc-row strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .npc-row span { color: var(--muted-2); font-size: 13px; }
 .npc-row b { color: var(--gold); font-size: 12px; letter-spacing: .08em; }
-.modal-overlay { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 48px); background: rgba(4,6,5,.72); backdrop-filter: blur(4px); animation: fadeIn .15s ease; }
+.modal-overlay { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: clamp(16px, 4vw, 48px); background: rgba(4,6,5,.72); backdrop-filter: blur(4px); animation: fadeIn .15s ease; }
 .modal-panel { width: 100%; max-width: 640px; max-height: min(720px, 88vh); overflow-y: auto; border: 1px solid var(--line-strong); background: var(--surface-2); box-shadow: 0 24px 60px rgba(0,0,0,.5); animation: modalIn .18s ease; }
 @keyframes modalIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
 

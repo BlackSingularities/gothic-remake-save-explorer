@@ -1,4 +1,4 @@
-import { Database, FileJson, FolderOpen, Download, Globe, SlidersHorizontal, Sword } from 'lucide-react'
+import { Database, FileJson, FolderOpen, Download, Globe, SlidersHorizontal } from 'lucide-react'
 import { BrandMark, StatusDot } from '../../components/Brand'
 import { useLanguage } from '../../i18n/LanguageContext'
 import type { ScanResult } from '../../types'
@@ -51,20 +51,7 @@ export function SettingsPage({
         </div>
       </div>
 
-      <div className="settings-card panel settings-card--telemetry">
-        <div className="settings-card__icon"><Sword size={21} /></div>
-        <div className="settings-card__content">
-          <p className="eyebrow">GŁĘBOKA TELEMETRIA</p>
-          <h3>Dekoder rdzenia GSAV</h3>
-          <p>Lokalnie rozpakowuje prywatną warstwę zapisu: atrybuty, umiejętności, pełny ekwipunek, zadania, NPC, handlarzy, kompendium, dziennik zdarzeń i stan fabuły. Oryginalny plik nigdy nie jest modyfikowany w trybie eksploratora.</p>
-          <div className="connector-status">
-            <span>Metadane i miniatury</span><b>ONLINE</b><i />
-            <span>Rdzeń Oodle Kraken</span><b>ONLINE</b>
-          </div>
-        </div>
-      </div>
-
-      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>wersja 1.0.0 · nieoficjalna aplikacja towarzysząca</span></div></div>
+      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>wersja 1.0.1 · nieoficjalna aplikacja towarzysząca</span></div></div>
     </section>
   )
 }

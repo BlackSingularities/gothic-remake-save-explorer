@@ -1,5 +1,5 @@
 import {
-  Archive, ArrowLeft, Check, Coins, Database, RefreshCcw, ScrollText, Shield, SlidersHorizontal, Sword, Users, X,
+  Archive, ArrowLeft, Coins, Database, RefreshCcw, ScrollText, Shield, SlidersHorizontal, Sword, Users,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { TabDef } from '../../components/Tabs'
@@ -87,10 +87,7 @@ export function SaveDetailView({ save, onClose }: { save: ParsedSave; onClose: (
       </div>
 
       <div className="save-view__body">
-        <div className="deep-status">
-          <div><p className="eyebrow">RDZEŃ GSAV</p><strong>{loading ? 'Rozpakowuję zapis…' : error ? 'Odczyt niepełny' : 'Głęboka telemetria aktywna'}</strong></div>
-          {loading ? <RefreshCcw size={17} className="is-spinning" /> : error ? <X size={17} /> : <span className="success-pill"><Check size={13} /> Odczytano</span>}
-        </div>
+        {loading && <div className="inline-loading"><RefreshCcw size={16} className="is-spinning" /> Rozpakowuję zapis…</div>}
 
         {error && <div className="deep-error"><Shield size={17} /><div><strong>Nie udało się odczytać warstwy prywatnej</strong><p>{error}</p></div></div>}
 

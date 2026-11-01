@@ -1,6 +1,7 @@
 import { Check, FolderOpen, LayoutGrid, Menu, RefreshCcw, ScrollText, Settings, Shield, X } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BrandMark } from './components/Brand'
+import { UpdateBanner } from './components/UpdateBanner'
 import { demoScan } from './demo'
 import { ExplorerPage } from './features/explorer/ExplorerPage'
 import { SaveDetailView } from './features/explorer/SaveDetailView'
@@ -133,6 +134,7 @@ function AppShell() {
         </header>
 
         <div className="content-wrap">
+          <UpdateBanner />
           {!scan?.detected || !scan.saves.length ? <EmptyState onChoose={() => void chooseDirectory()} /> : (
             <>
               {page === 'explorer' && <ExplorerPage scan={scan} saves={saves} onOpenSave={setSelectedSave} />}

@@ -390,7 +390,22 @@ export interface LocationSpotOption {
   yaw: number
 }
 
+export interface UpdateInfo {
+  version: string
+  notes: string
+  pageUrl: string
+  publishedAt: string
+  assetUrl: string
+  assetName: string
+  size: number
+}
+
 export interface CompanionApi {
+  appVersion: () => Promise<string>
+  checkForUpdate: () => Promise<ApiResult<UpdateInfo | null>>
+  downloadUpdate: (info: UpdateInfo) => Promise<ApiResult<string>>
+  installUpdate: (file: string) => Promise<ApiResult<null>>
+  onUpdateProgress: (callback: (fraction: number) => void) => () => void
   scan: () => Promise<ScanResult>
   chooseDirectory: () => Promise<ScanResult | null>
   openDirectory: () => Promise<boolean>

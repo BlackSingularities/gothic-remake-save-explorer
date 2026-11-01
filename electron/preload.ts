@@ -2,6 +2,15 @@ import { contextBridge, ipcRenderer } from 'electron'
 import type { CompanionApi } from '../src/types'
 
 const api: CompanionApi = {
+  appVersion: () => ipcRenderer.invoke('app:version'),
+  checkForUpdate: () => ipcRenderer.invoke('update:check'),
+  downloadUpdate: (info) => ipcRenderer.invoke('update:download', info),
+  installUpdate: (file) => ipcRenderer.invoke('update:install', file),
+  onUpdateProgress: (callback) => {
+    const listener = (_event: Electron.IpcRendererEvent, fraction: number) => callback(fraction)
+    ipcRenderer.on('update:progress', listener)
+    return () => ipcRenderer.removeListener('update:progress', listener)
+  },
   scan: () => ipcRenderer.invoke('saves:scan'),
   chooseDirectory: () => ipcRenderer.invoke('saves:choose-directory'),
   openDirectory: () => ipcRenderer.invoke('saves:open-directory'),

@@ -2,7 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron'
 import { promises as fs, watch, type FSWatcher } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { EditOperation, ParsedSave, ScanResult } from '../src/types'
+import type { EditOperation, ParsedSave, ScanResult, UpdateInfo } from '../src/types'
 import { searchItemCatalog, searchLocationSpots } from './goresave/catalogs'
 import {
   clearDeepSaveCache,
@@ -22,6 +22,7 @@ import {
 } from './goresave/read'
 import { checkCodec, commitEditorSession, skillCatalog } from './goresave/write'
 import { scanSaveDirectory } from './save-parser'
+import { checkForUpdate, downloadUpdate, installUpdate } from './updater'
 
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url))
 let mainWindow: BrowserWindow | null = null
@@ -147,6 +148,30 @@ function createWindow(): void {
 app.whenReady().then(async () => {
   selectedDirectory = await loadDirectorySetting()
   startWatcher(selectedDirectory)
+
+  ipcMain.handle('app:version', () => app.getVersion())
+  ipcMain.handle('update:check', async () => {
+    try {
+      return { success: true, data: app.isPackaged ? await checkForUpdate() : null }
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Nie udało się sprawdzić aktualizacji' }
+    }
+  })
+  ipcMain.handle('update:download', async (event, info: UpdateInfo) => {
+    try {
+      return { success: true, data: await downloadUpdate(info, (fraction) => event.sender.send('update:progress', fraction)) }
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Pobieranie aktualizacji nie powiodło się' }
+    }
+  })
+  ipcMain.handle('update:install', async (_event, file: string) => {
+    try {
+      await installUpdate(file)
+      return { success: true, data: null }
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Instalacja aktualizacji nie powiodła się' }
+    }
+  })
 
   ipcMain.handle('saves:scan', currentScan)
   ipcMain.handle('saves:choose-directory', async () => {

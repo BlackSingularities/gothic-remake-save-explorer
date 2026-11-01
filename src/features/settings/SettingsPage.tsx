@@ -1,4 +1,5 @@
 import { Database, FileJson, FolderOpen, Download, Globe, SlidersHorizontal } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { BrandMark, StatusDot } from '../../components/Brand'
 import { useLanguage } from '../../i18n/LanguageContext'
 import type { ScanResult } from '../../types'
@@ -7,6 +8,11 @@ export function SettingsPage({
   scan, onChoose, onOpenFolder, onExport,
 }: { scan: ScanResult; onChoose: () => void; onOpenFolder: () => void; onExport: (format: 'json' | 'csv') => void }) {
   const { language, setLanguage } = useLanguage()
+  const [version, setVersion] = useState('')
+
+  useEffect(() => {
+    void window.gothic?.appVersion().then(setVersion)
+  }, [])
 
   return (
     <section className="settings-page">
@@ -51,7 +57,7 @@ export function SettingsPage({
         </div>
       </div>
 
-      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>wersja 1.0.3 · nieoficjalna aplikacja towarzysząca</span></div></div>
+      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>{version ? `wersja ${version} · ` : ''}nieoficjalna aplikacja towarzysząca</span></div></div>
     </section>
   )
 }

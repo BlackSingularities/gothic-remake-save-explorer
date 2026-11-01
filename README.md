@@ -28,6 +28,10 @@ Każda zmiana trafia do kolejki, a zapis odbywa się dopiero po kliknięciu „Z
 2. kopia jest niezależnie zwalidowana (pełny odczyt zwrotny),
 3. dopiero wtedy zostaje dołożona jako nowy, osobny slot `G1R-XXX.sav` w katalogu zapisów wybranego profilu.
 
+## Instalacja i aktualizacje
+
+Instalator `Gothic-Remake-Save-Explorer-Setup-X.Y.Z.exe` można pobrać ze strony [redzikowski.com/portfolio/gothic-save-explorer](https://redzikowski.com/portfolio/gothic-save-explorer). Program instaluje się w `Program Files`, więc instalator prosi o zgodę administratora. Przy starcie aplikacja sprawdza na redzikowski.com, czy jest nowsza wersja, i pokazuje pasek z przyciskiem **Zainstaluj**: instalator jest pobierany i uruchamiany po cichu w folderze poprzedniej instalacji, a po aktualizacji aplikacja uruchamia się ponownie. Gdy zgoda administratora zostanie odrzucona, aplikacja zostaje otwarta i pokazuje komunikat.
+
 ## Nazwy po polsku
 
 Nazwy przedmiotów, NPC, questów i lokacji są tłumaczone przez łańcuch źródeł: jeśli gra jest zainstalowana lokalnie, aplikacja odczytuje jej własny (zaszyfrowany) plik lokalizacji i pokazuje autentyczny polski tekst; w innym wypadku korzysta z bundlowanego słownika angielskiego, a na końcu z uczłowieczonego identyfikatora. Interfejs (przyciski, nagłówki) ma osobny przełącznik PL/EN w Ustawieniach.

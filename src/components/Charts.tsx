@@ -1,3 +1,4 @@
+import { tr } from '../i18n/tr'
 export interface ChartSeries {
   id: string
   label: string
@@ -7,7 +8,7 @@ export interface ChartSeries {
 
 export function MultiLineChart({ series, height = 200 }: { series: ChartSeries[]; height?: number }) {
   const allPoints = series.flatMap((s) => s.points)
-  if (!allPoints.length) return <div className="inline-empty">Brak danych do wykresu</div>
+  if (!allPoints.length) return <div className="inline-empty">{tr('Brak danych do wykresu')}</div>
 
   const maxY = Math.max(1, ...allPoints.map((p) => p.y))
   const minY = Math.min(0, ...allPoints.map((p) => p.y))
@@ -21,7 +22,7 @@ export function MultiLineChart({ series, height = 200 }: { series: ChartSeries[]
 
   return (
     <div className="line-chart">
-      <svg viewBox="0 0 100 96" preserveAspectRatio="none" style={{ height }} role="img" aria-label="Wykres porównawczy">
+      <svg viewBox="0 0 100 96" preserveAspectRatio="none" style={{ height }} role="img" aria-label={tr('Wykres porównawczy')}>
         {[16, 40, 64, 88].map((y) => <line key={y} x1="4" x2="96" y1={y} y2={y} className="chart-grid" />)}
         {series.map((s) => {
           const points = [...s.points].sort((a, b) => a.x - b.x)
@@ -47,7 +48,7 @@ export function MultiLineChart({ series, height = 200 }: { series: ChartSeries[]
 
 export function BarChart({ bars, height = 170 }: { bars: Array<{ label: string; value: number; color?: string }>; height?: number }) {
   const max = Math.max(1, ...bars.map((bar) => bar.value))
-  if (!bars.length) return <div className="inline-empty">Brak danych do wykresu</div>
+  if (!bars.length) return <div className="inline-empty">{tr('Brak danych do wykresu')}</div>
   return (
     <div className="bar-chart" style={{ height }}>
       {bars.map((bar) => (
@@ -79,7 +80,7 @@ export function RadarChart({ axes, size = 230 }: { axes: Array<{ label: string; 
   }).join(' ')
 
   return (
-    <svg viewBox="0 0 100 100" style={{ width: size, height: size }} role="img" aria-label="Wykres radarowy">
+    <svg viewBox="0 0 100 100" style={{ width: size, height: size }} role="img" aria-label={tr('Wykres radarowy')}>
       {[0.25, 0.5, 0.75, 1].map((ratio) => (
         <polygon key={ratio} points={axes.map((_, i) => { const p = pointAt(i, ratio); return `${p.x},${p.y}` }).join(' ')} className="radar-ring" />
       ))}

@@ -5,6 +5,7 @@ import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
 import type { NpcRelationship, NpcSummary } from '../../../types'
 import type { PendingEditsController } from '../usePendingEdits'
+import { tr } from '../../../i18n/tr'
 
 const relationshipOptions: NpcRelationship[] = ['friend', 'neutral', 'enemy']
 const relationshipLabels: Record<NpcRelationship, string> = { friend: 'Przyjazny', neutral: 'Neutralny', enemy: 'Wrogi' }
@@ -23,27 +24,27 @@ function NpcRow({ npc, controller }: { npc: NpcSummary; controller: PendingEdits
       className="editor-item-row"
       onSubmit={(event) => {
         event.preventDefault()
-        controller.addEdit(relKey, { kind: 'npcRelationship', id: npc.id, name: npc.name, relationship }, `${npc.name}: relacja → ${relationshipLabels[relationship]}`)
+        controller.addEdit(relKey, { kind: 'npcRelationship', id: npc.id, name: npc.name, relationship }, tr('{0}: relacja → {1}', npc.name, tr(relationshipLabels[relationship])))
       }}
     >
       <strong>{npc.name}</strong>
       <select value={relationship} onChange={(event) => setRelationship(event.target.value as NpcRelationship)}>
-        {relationshipOptions.map((value) => <option key={value} value={value}>{relationshipLabels[value]}</option>)}
+        {relationshipOptions.map((value) => <option key={value} value={value}>{tr(relationshipLabels[value])}</option>)}
       </select>
-      <button className="button button--secondary" type="submit">Zastosuj</button>
+      <button className="button button--secondary" type="submit">{tr('Zastosuj')}</button>
       {npc.isDead && (
         <button
           className="icon-button"
           type="button"
-          title="Wskrześ"
+          title={tr('Wskrześ')}
           disabled={Boolean(queuedRevive)}
-          onClick={() => controller.addEdit(reviveKey, { kind: 'npcRevive', id: npc.id, name: npc.name }, `Wskrześ: ${npc.name}`)}
+          onClick={() => controller.addEdit(reviveKey, { kind: 'npcRevive', id: npc.id, name: npc.name }, tr('Wskrześ: {0}', npc.name))}
         >
           <HeartPulse size={14} />
         </button>
       )}
-      {queuedRel && <small className="editor-field__queued">w kolejce: {relationshipLabels[queuedRel.operation.kind === 'npcRelationship' ? queuedRel.operation.relationship : relationship]}</small>}
-      {queuedRevive && <small className="editor-field__queued">w kolejce: wskrzeszenie</small>}
+      {queuedRel && <small className="editor-field__queued">{tr('w kolejce: {0}', tr(relationshipLabels[queuedRel.operation.kind === 'npcRelationship' ? queuedRel.operation.relationship : relationship]))}</small>}
+      {queuedRevive && <small className="editor-field__queued">{tr('w kolejce: wskrzeszenie')}</small>}
     </form>
   )
 }
@@ -56,9 +57,9 @@ export function NpcEditTab({ filePath, controller }: { filePath: string; control
 
   return (
     <div className="deep-tab-panel">
-      <p className="tab-note">Pokazujemy postacie martwe lub o zmienionej relacji — użyj wyszukiwania, żeby znaleźć dowolną inną.</p>
-      <SearchField value={query} onChange={setQuery} placeholder="Szukaj postaci…" />
-      <TabPanelState loading={npcs.loading} error={npcs.error} empty={!npcs.loading && !relevant.length && !query} emptyLabel="Brak martwych lub oznaczonych postaci — wyszukaj po imieniu" />
+      <p className="tab-note">{tr('Pokazujemy postacie martwe lub o zmienionej relacji — użyj wyszukiwania, żeby znaleźć dowolną inną.')}</p>
+      <SearchField value={query} onChange={setQuery} placeholder={tr('Szukaj postaci…')} />
+      <TabPanelState loading={npcs.loading} error={npcs.error} empty={!npcs.loading && !relevant.length && !query} emptyLabel={tr('Brak martwych lub oznaczonych postaci — wyszukaj po imieniu')} />
       <div className="editor-item-list">
         {(query ? filtered.slice(0, 200) : relevant).map((npc) => <NpcRow key={npc.id} npc={npc} controller={controller} />)}
       </div>

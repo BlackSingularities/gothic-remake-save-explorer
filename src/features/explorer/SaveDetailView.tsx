@@ -4,7 +4,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import type { TabDef } from '../../components/Tabs'
 import { TabBar } from '../../components/Tabs'
-import { formatBytes, formatDate, formatDuration } from '../../lib/format'
+import { formatBytes, formatDate, formatDuration, formatNumber } from '../../lib/format'
 import { AdvancedEditTab } from '../editor/tabs/AdvancedEditTab'
 import { CharacterEditTab } from '../editor/tabs/CharacterEditTab'
 import { FactionsEditTab } from '../editor/tabs/FactionsEditTab'
@@ -27,6 +27,7 @@ import { SkillsTab } from './detail/SkillsTab'
 import { TradersTab } from './detail/TradersTab'
 import { WorldTab } from './detail/WorldTab'
 import { KindBadge } from './SaveCard'
+import { tr } from '../../i18n/tr'
 
 type DetailTab = 'character' | 'inventory' | 'skills' | 'quests' | 'npcs' | 'traders' | 'factions' | 'glossary' | 'world' | 'advanced'
 
@@ -54,10 +55,10 @@ function SafetyBanner({ onDismiss }: { onDismiss: () => void }) {
     <div className="editor-safety-banner">
       <Shield size={22} />
       <div>
-        <strong>Edytujesz kopię, nie oryginał</strong>
-        <p>Każda zmiana zapisywana jest do nowego pliku i dokładana jako osobny slot w katalogu zapisów — oryginalny plik nigdy nie jest modyfikowany. Mimo to trzymaj własne kopie ważnych zapisów. Jeśli grasz przez Steam Cloud, edytuj przy uruchomionej grze i wczytaj nowy slot z menu, zamiast restartować grę — inaczej chmura może nadpisać zmiany.</p>
+        <strong>{tr('Edytujesz kopię, nie oryginał')}</strong>
+        <p>{tr('Każda zmiana zapisywana jest do nowego pliku i dokładana jako osobny slot w katalogu zapisów — oryginalny plik nigdy nie jest modyfikowany. Mimo to trzymaj własne kopie ważnych zapisów. Jeśli grasz przez Steam Cloud, edytuj przy uruchomionej grze i wczytaj nowy slot z menu, zamiast restartować grę — inaczej chmura może nadpisać zmiany.')}</p>
       </div>
-      <button className="icon-button" onClick={onDismiss} aria-label="Zamknij"><X size={16} /></button>
+      <button className="icon-button" onClick={onDismiss} aria-label={tr('Zamknij')}><X size={16} /></button>
     </div>
   )
 }
@@ -87,17 +88,17 @@ export function SaveDetailView({
     setTab('character')
     if (!window.gothic) {
       setLoading(false)
-      setError('Głęboka telemetria działa w aplikacji desktopowej')
+      setError(tr('Głęboka telemetria działa w aplikacji desktopowej'))
       return
     }
     void window.gothic.inspectDeepSave(save.filePath).then((result) => {
       if (!active) return
       if (result.success && result.details) setDetails(result.details)
-      else setError(result.error || 'Nie udało się rozpakować rdzenia zapisu')
+      else setError(tr(result.error || 'Nie udało się rozpakować rdzenia zapisu'))
       setLoading(false)
     }).catch((fetchError) => {
       if (!active) return
-      setError(fetchError instanceof Error ? fetchError.message : 'Nie udało się rozpakować rdzenia zapisu')
+      setError(fetchError instanceof Error ? fetchError.message : tr('Nie udało się rozpakować rdzenia zapisu'))
       setLoading(false)
     })
     return () => { active = false }
@@ -133,16 +134,16 @@ export function SaveDetailView({
   }, [controller.pending])
 
   const tabs: Array<TabDef<DetailTab>> = [
-    { id: 'character', label: 'Postać', icon: <Sword size={14} />, badge: editMode ? pendingCountByTab.character : undefined, badgePending: true },
-    { id: 'inventory', label: 'Ekwipunek', icon: <Archive size={14} />, badge: editMode ? pendingCountByTab.inventory : details?.inventory.stackCount, badgePending: editMode },
-    { id: 'skills', label: 'Umiejętności', icon: <SlidersHorizontal size={14} />, badge: editMode ? pendingCountByTab.skills : undefined, badgePending: true },
-    { id: 'quests', label: 'Zadania', icon: <ScrollText size={14} />, badge: editMode ? pendingCountByTab.quests : details?.quests.running, badgePending: editMode },
+    { id: 'character', label: tr('Postać'), icon: <Sword size={14} />, badge: editMode ? pendingCountByTab.character : undefined, badgePending: true },
+    { id: 'inventory', label: tr('Ekwipunek'), icon: <Archive size={14} />, badge: editMode ? pendingCountByTab.inventory : details?.inventory.stackCount, badgePending: editMode },
+    { id: 'skills', label: tr('Umiejętności'), icon: <SlidersHorizontal size={14} />, badge: editMode ? pendingCountByTab.skills : undefined, badgePending: true },
+    { id: 'quests', label: tr('Zadania'), icon: <ScrollText size={14} />, badge: editMode ? pendingCountByTab.quests : details?.quests.running, badgePending: editMode },
     { id: 'npcs', label: 'NPC', icon: <Users size={14} />, badge: editMode ? pendingCountByTab.npcs : undefined, badgePending: true },
-    { id: 'traders', label: 'Handlarze', icon: <Coins size={14} />, badge: editMode ? pendingCountByTab.traders : undefined, badgePending: true },
-    { id: 'factions', label: 'Frakcje', icon: <Shield size={14} />, badge: editMode ? pendingCountByTab.factions : undefined, badgePending: true },
-    { id: 'glossary', label: 'Kompendium', icon: <ScrollText size={14} /> },
-    { id: 'world', label: 'Świat', icon: <Database size={14} />, badge: editMode ? pendingCountByTab.world : undefined, badgePending: true },
-    { id: 'advanced', label: 'Zaawansowane', icon: <SlidersHorizontal size={14} />, badge: editMode ? pendingCountByTab.advanced : undefined, badgePending: true },
+    { id: 'traders', label: tr('Handlarze'), icon: <Coins size={14} />, badge: editMode ? pendingCountByTab.traders : undefined, badgePending: true },
+    { id: 'factions', label: tr('Frakcje'), icon: <Shield size={14} />, badge: editMode ? pendingCountByTab.factions : undefined, badgePending: true },
+    { id: 'glossary', label: tr('Kompendium'), icon: <ScrollText size={14} /> },
+    { id: 'world', label: tr('Świat'), icon: <Database size={14} />, badge: editMode ? pendingCountByTab.world : undefined, badgePending: true },
+    { id: 'advanced', label: tr('Zaawansowane'), icon: <SlidersHorizontal size={14} />, badge: editMode ? pendingCountByTab.advanced : undefined, badgePending: true },
   ]
 
   return (
@@ -150,33 +151,33 @@ export function SaveDetailView({
       <div className="save-view__hero">
         {save.screenshot && <img src={save.screenshot} alt="" />}
         <div className="save-view__shade" />
-        <button className="save-view__back" onClick={onClose}><ArrowLeft size={16} /> Wróć do eksploratora</button>
+        <button className="save-view__back" onClick={onClose}><ArrowLeft size={16} /> {tr('Wróć do eksploratora')}</button>
         <div className="save-view__title">
           <KindBadge kind={save.kind} />
-          <p>{save.slotName} · Profil {save.profileId + 1} · {formatDuration(save.timePlayedSeconds)}</p>
+          <p>{save.slotName} · {tr('Profil {0}', save.profileId + 1)} · {formatDuration(save.timePlayedSeconds)}</p>
           <h2>{save.displayName}</h2>
         </div>
         {details && (
           <button className={`save-view__edit-toggle${editMode ? ' is-active' : ''}`} onClick={toggleEditMode}>
-            <Pencil size={15} /> {editMode ? 'Zakończ edycję' : 'Tryb edycji'}
+            <Pencil size={15} /> {editMode ? tr('Zakończ edycję') : tr('Tryb edycji')}
           </button>
         )}
       </div>
 
       <div className="save-view__body">
-        {loading && <div className="inline-loading"><RefreshCcw size={16} className="is-spinning" /> Rozpakowuję zapis…</div>}
+        {loading && <div className="inline-loading"><RefreshCcw size={16} className="is-spinning" /> {tr('Rozpakowuję zapis…')}</div>}
 
-        {error && <div className="deep-error"><Shield size={17} /><div><strong>Nie udało się odczytać warstwy prywatnej</strong><p>{error}</p></div></div>}
+        {error && <div className="deep-error"><Shield size={17} /><div><strong>{tr('Nie udało się odczytać warstwy prywatnej')}</strong><p>{error}</p></div></div>}
 
         {editMode && showBanner && <SafetyBanner onDismiss={dismissBanner} />}
 
         {details && (
           <>
             <div className="deep-hero-stats">
-              <div><span>Poziom</span><strong>{attributeValue(details, 'Level')}</strong></div>
-              <div><span>Doświadczenie</span><strong>{attributeValue(details, 'Experience').toLocaleString('pl-PL')}</strong></div>
-              <div><span>Życie</span><strong>{attributeValue(details, 'Health')} / {attributeValue(details, 'MaxHealth')}</strong></div>
-              <div><span>Ruda</span><strong>{details.inventory.oreCount}</strong></div>
+              <div><span>{tr('Poziom')}</span><strong>{attributeValue(details, 'Level')}</strong></div>
+              <div><span>{tr('Doświadczenie')}</span><strong>{formatNumber(attributeValue(details, 'Experience'))}</strong></div>
+              <div><span>{tr('Życie')}</span><strong>{attributeValue(details, 'Health')} / {attributeValue(details, 'MaxHealth')}</strong></div>
+              <div><span>{tr('Ruda')}</span><strong>{details.inventory.oreCount}</strong></div>
             </div>
 
             <TabBar tabs={tabs} active={tab} onChange={setTab} />
@@ -228,13 +229,13 @@ export function SaveDetailView({
         )}
 
         <section className="drawer-section drawer-section--file">
-          <div className="section-heading"><p className="eyebrow">PLIK ŹRÓDŁOWY</p>{details && <span className="section-caption">odczyt {details.parseTimeMs} ms</span>}</div>
+          <div className="section-heading"><p className="eyebrow">{tr('PLIK ŹRÓDŁOWY')}</p>{details && <span className="section-caption">{tr('odczyt {0} ms', details.parseTimeMs)}</span>}</div>
           <code>{save.filePath}</code>
           <div className="file-facts">
             <span>{formatBytes(save.sizeBytes)}</span>
             <span>{formatDate(save.modifiedAt)}</span>
             {save.sha1 && <span title={save.sha1}>SHA1 {save.sha1.slice(0, 10)}…</span>}
-            {details && <span>rdzeń {formatBytes(details.decoder.decompressedBytes)}</span>}
+            {details && <span>{tr('rdzeń {0}', formatBytes(details.decoder.decompressedBytes))}</span>}
           </div>
         </section>
       </div>

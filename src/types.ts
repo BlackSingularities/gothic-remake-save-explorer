@@ -407,10 +407,10 @@ export interface CompanionApi {
   installUpdate: (file: string) => Promise<ApiResult<null>>
   onUpdateProgress: (callback: (fraction: number) => void) => () => void
   scan: () => Promise<ScanResult>
-  chooseDirectory: () => Promise<ScanResult | null>
+  chooseDirectory: (title?: string) => Promise<ScanResult | null>
   openDirectory: () => Promise<boolean>
   inspectDeepSave: (filePath: string) => Promise<DeepInspectResult>
-  exportData: (format: 'json' | 'csv') => Promise<ExportResult>
+  exportData: (format: 'json' | 'csv', title?: string) => Promise<ExportResult>
   onSavesChanged: (callback: () => void) => () => void
   listNpcs: (filePath: string) => Promise<ApiResult<NpcSummary[]>>
   npcDetail: (filePath: string, id: string) => Promise<ApiResult<NpcDetail>>

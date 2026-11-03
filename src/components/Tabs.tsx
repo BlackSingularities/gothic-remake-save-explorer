@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { tr } from '../i18n/tr'
 
 export interface TabDef<T extends string> {
   id: T
@@ -24,8 +25,8 @@ export function TabBar<T extends string>({
 }
 
 export function TabPanelState({ loading, error, empty, emptyLabel }: { loading: boolean; error: string | null; empty?: boolean; emptyLabel?: string }) {
-  if (loading) return <div className="inline-empty"><span className="is-spinning tab-spinner" />Wczytywanie…</div>
-  if (error) return <div className="inline-empty inline-empty--error">{error}</div>
-  if (empty) return <div className="inline-empty">{emptyLabel || 'Brak danych'}</div>
+  if (loading) return <div className="inline-empty"><span className="is-spinning tab-spinner" />{tr('Wczytywanie…')}</div>
+  if (error) return <div className="inline-empty inline-empty--error">{tr(error)}</div>
+  if (empty) return <div className="inline-empty">{emptyLabel || tr('Brak danych')}</div>
   return null
 }

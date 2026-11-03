@@ -3,6 +3,7 @@ import { StatusDot } from '../../../components/Brand'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
 import type { DeepSaveDetails, QuestEntry, TutorialEntry } from '../../../types'
+import { tr } from '../../../i18n/tr'
 
 const stateLabels: Record<QuestEntry['state'], string> = {
   available: 'DOSTĘPNE',
@@ -17,8 +18,8 @@ function QuestRow({ id, name, group, state }: { id: string; name: string; group:
   return (
     <div key={id}>
       <span className={`quest-state quest-state--${state}`}><StatusDot active={state === 'running' || state === 'succeeded'} /></span>
-      <div><strong>{name}</strong><span>{group}</span><code>{id}</code></div>
-      <b>{stateLabels[state]}</b>
+      <div><strong>{name}</strong><span>{tr(group)}</span><code>{id}</code></div>
+      <b>{tr(stateLabels[state])}</b>
     </div>
   )
 }
@@ -33,16 +34,16 @@ export function QuestsTab({ details, filePath }: { details: DeepSaveDetails; fil
   return (
     <div className="deep-tab-panel">
       <div className="quest-summary-grid">
-        <div className="is-running"><span>Aktywne</span><strong>{details.quests.running}</strong></div>
-        <div className="is-success"><span>Ukończone</span><strong>{details.quests.succeeded}</strong></div>
-        <div><span>Dostępne</span><strong>{details.quests.available}</strong></div>
-        <div><span>W rdzeniu</span><strong>{details.quests.total}</strong></div>
+        <div className="is-running"><span>{tr('Aktywne')}</span><strong>{details.quests.running}</strong></div>
+        <div className="is-success"><span>{tr('Ukończone')}</span><strong>{details.quests.succeeded}</strong></div>
+        <div><span>{tr('Dostępne')}</span><strong>{details.quests.available}</strong></div>
+        <div><span>{tr('W rdzeniu')}</span><strong>{details.quests.total}</strong></div>
       </div>
       <div className="quest-list">
         {details.quests.entries.map((quest) => <QuestRow key={quest.id} {...quest} />)}
       </div>
       <details className="unlearned-skills" onToggle={(event) => setShowTutorials(event.currentTarget.open)}>
-        <summary>Poradniki</summary>
+        <summary>{tr('Poradniki')}</summary>
         <TabPanelState loading={tutorials.loading} error={tutorials.error} empty={!tutorials.loading && !tutorials.data?.length} />
         {tutorials.data && (
           <div className="quest-list">

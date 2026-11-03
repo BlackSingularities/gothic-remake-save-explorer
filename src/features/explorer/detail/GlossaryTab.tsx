@@ -2,6 +2,7 @@ import { Lock, Unlock } from 'lucide-react'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
 import type { GlossaryResult } from '../../../types'
+import { tr } from '../../../i18n/tr'
 
 export function GlossaryTab({ filePath }: { filePath: string }) {
   const glossary = useAsyncResource<GlossaryResult>(window.gothic ? () => window.gothic!.glossary(filePath) : null, [filePath])
@@ -12,12 +13,12 @@ export function GlossaryTab({ filePath }: { filePath: string }) {
       {glossary.data && (
         <>
           <div className="quest-summary-grid quest-summary-grid--narrow">
-            <div className="is-success"><span>Odblokowane</span><strong>{glossary.data.unlockedTotal}</strong></div>
-            <div><span>Wpisy w kompendium</span><strong>{glossary.data.total}</strong></div>
+            <div className="is-success"><span>{tr('Odblokowane')}</span><strong>{glossary.data.unlockedTotal}</strong></div>
+            <div><span>{tr('Wpisy w kompendium')}</span><strong>{glossary.data.total}</strong></div>
           </div>
           {glossary.data.categories.map((category) => (
             <section className="drawer-section deep-section" key={category.name}>
-              <div className="section-heading"><h3>{category.name}</h3><span className="section-caption">{category.entries.length} wpisów</span></div>
+              <div className="section-heading"><h3>{category.name}</h3><span className="section-caption">{tr('{0} wpisów', category.entries.length)}</span></div>
               <div className="glossary-grid">
                 {category.entries.map((entry) => (
                   <div key={entry.id} className={entry.unlockedSegments > 0 ? 'is-unlocked' : ''}>

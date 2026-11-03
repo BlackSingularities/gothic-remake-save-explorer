@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { BrandMark, StatusDot } from '../../components/Brand'
 import { useLanguage } from '../../i18n/LanguageContext'
 import type { ScanResult } from '../../types'
+import { tr } from '../../i18n/tr'
 
 export function SettingsPage({
   scan, onChoose, onOpenFolder, onExport,
@@ -19,24 +20,24 @@ export function SettingsPage({
       <div className="settings-card panel">
         <div className="settings-card__icon"><FolderOpen size={21} /></div>
         <div className="settings-card__content">
-          <p className="eyebrow">ŹRÓDŁO DANYCH</p>
-          <h3>Katalog zapisów</h3>
-          <p>Aplikacja obserwuje ten katalog i odświeża listę przy każdej zmianie pliku.</p>
+          <p className="eyebrow">{tr('ŹRÓDŁO DANYCH')}</p>
+          <h3>{tr('Katalog zapisów')}</h3>
+          <p>{tr('Aplikacja obserwuje ten katalog i odświeża listę przy każdej zmianie pliku.')}</p>
           <code>{scan.directory}</code>
           <div className="settings-actions">
-            <button className="button button--secondary" onClick={onChoose}><SlidersHorizontal size={16} /> Zmień katalog</button>
-            <button className="button button--ghost" onClick={onOpenFolder}><FolderOpen size={16} /> Otwórz w Eksploratorze</button>
+            <button className="button button--secondary" onClick={onChoose}><SlidersHorizontal size={16} /> {tr('Zmień katalog')}</button>
+            <button className="button button--ghost" onClick={onOpenFolder}><FolderOpen size={16} /> {tr('Otwórz w Eksploratorze')}</button>
           </div>
         </div>
-        <span className="success-pill"><StatusDot /> Wykryto</span>
+        <span className="success-pill"><StatusDot /> {tr('Wykryto')}</span>
       </div>
 
       <div className="settings-card panel">
         <div className="settings-card__icon"><Globe size={21} /></div>
         <div className="settings-card__content">
-          <p className="eyebrow">JĘZYK</p>
-          <h3>Interfejs aplikacji</h3>
-          <p>Nazwy przedmiotów, NPC i questów zawsze preferują polski tekst gry, jeśli jest dostępny — niezależnie od tego ustawienia.</p>
+          <p className="eyebrow">{tr('JĘZYK')}</p>
+          <h3>{tr('Interfejs aplikacji')}</h3>
+          <p>{tr('Nazwy przedmiotów, NPC i questów zawsze preferują polski tekst gry, jeśli jest dostępny — niezależnie od tego ustawienia.')}</p>
           <div className="settings-actions">
             <button className={`button ${language === 'pl' ? 'button--primary' : 'button--secondary'}`} onClick={() => setLanguage('pl')}>Polski</button>
             <button className={`button ${language === 'en' ? 'button--primary' : 'button--secondary'}`} onClick={() => setLanguage('en')}>English</button>
@@ -47,17 +48,17 @@ export function SettingsPage({
       <div className="settings-card panel">
         <div className="settings-card__icon"><Database size={21} /></div>
         <div className="settings-card__content">
-          <p className="eyebrow">PRZENOŚNE DANE</p>
-          <h3>Eksport danych</h3>
-          <p>Zapisz odczytane metadane zapisów bez miniaturek i bez modyfikowania oryginalnych plików gry. Aplikacja nigdy nie kopiuje zapisów — jedyną drogą wyjścia danych jest eksport.</p>
+          <p className="eyebrow">{tr('PRZENOŚNE DANE')}</p>
+          <h3>{tr('Eksport danych')}</h3>
+          <p>{tr('Zapisz odczytane metadane zapisów bez miniaturek i bez modyfikowania oryginalnych plików gry. Aplikacja nigdy nie kopiuje zapisów — jedyną drogą wyjścia danych jest eksport.')}</p>
           <div className="settings-actions">
-            <button className="button button--secondary" onClick={() => onExport('json')}><FileJson size={16} /> Eksport JSON</button>
-            <button className="button button--ghost" onClick={() => onExport('csv')}><Download size={16} /> Eksport CSV</button>
+            <button className="button button--secondary" onClick={() => onExport('json')}><FileJson size={16} /> {tr('Eksport JSON')}</button>
+            <button className="button button--ghost" onClick={() => onExport('csv')}><Download size={16} /> {tr('Eksport CSV')}</button>
           </div>
         </div>
       </div>
 
-      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>{version ? `wersja ${version} · ` : ''}nieoficjalna aplikacja towarzysząca</span></div></div>
+      <div className="about-line"><BrandMark small /><div><strong>Gothic Remake Save Explorer</strong><span>{version ? tr('wersja {0} · ', version) : ''}{tr('nieoficjalna aplikacja towarzysząca')}</span></div></div>
     </section>
   )
 }

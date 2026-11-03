@@ -174,9 +174,9 @@ app.whenReady().then(async () => {
   })
 
   ipcMain.handle('saves:scan', currentScan)
-  ipcMain.handle('saves:choose-directory', async () => {
+  ipcMain.handle('saves:choose-directory', async (_event, title?: string) => {
     const result = await dialog.showOpenDialog(mainWindow!, {
-      title: 'Wskaż katalog zapisów Gothic 1 Remake',
+      title: title || 'Wskaż katalog zapisów Gothic 1 Remake',
       defaultPath: selectedDirectory,
       properties: ['openDirectory'],
     })
@@ -238,10 +238,10 @@ app.whenReady().then(async () => {
     return commitEditorSession(filePath, edits, targetProfileId, selectedDirectory)
   })
 
-  ipcMain.handle('saves:export', async (_event, format: 'json' | 'csv') => {
+  ipcMain.handle('saves:export', async (_event, format: 'json' | 'csv', title?: string) => {
     const scan = await currentScan()
     const result = await dialog.showSaveDialog(mainWindow!, {
-      title: 'Eksportuj kronikę',
+      title: title || 'Eksportuj kronikę',
       defaultPath: path.join(app.getPath('documents'), `kronika-kolonii.${format}`),
       filters: [{ name: format.toUpperCase(), extensions: [format] }],
     })

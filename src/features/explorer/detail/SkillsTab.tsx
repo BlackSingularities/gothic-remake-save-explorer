@@ -1,4 +1,5 @@
 import type { DeepSaveDetails } from '../../../types'
+import { tr } from '../../../i18n/tr'
 
 export function SkillsTab({ details }: { details: DeepSaveDetails }) {
   const learned = details.skills.filter((skill) => skill.learned)
@@ -14,25 +15,25 @@ export function SkillsTab({ details }: { details: DeepSaveDetails }) {
     <div className="deep-tab-panel">
       <section className="drawer-section deep-section">
         <div className="section-heading">
-          <div><p className="eyebrow">TRENING</p><h3>Umiejętności</h3></div>
-          <span className="success-pill">{learned.length} aktywnych</span>
+          <div><p className="eyebrow">{tr('TRENING')}</p><h3>{tr('Umiejętności')}</h3></div>
+          <span className="success-pill">{tr('{0} aktywnych', learned.length)}</span>
         </div>
         {[...byCategory.entries()].map(([category, skills]) => (
           <div key={category} className="skill-category-group">
-            <p className="skill-category-group__label">{category}</p>
+            <p className="skill-category-group__label">{tr(category)}</p>
             <div className="skill-list skill-list--learned">
               {skills.map((skill) => (
-                <div key={skill.id}><span><b>{skill.label}</b></span><strong>{skill.level}</strong></div>
+                <div key={skill.id}><span><b>{tr(skill.label)}</b></span><strong>{tr(skill.level)}</strong></div>
               ))}
             </div>
           </div>
         ))}
-        {!learned.length && <div className="inline-empty">Brak wyuczonych umiejętności</div>}
+        {!learned.length && <div className="inline-empty">{tr('Brak wyuczonych umiejętności')}</div>}
         <details className="unlearned-skills">
-          <summary>Pokaż niewyuczone ({other.length})</summary>
+          <summary>{tr('Pokaż niewyuczone ({0})', other.length)}</summary>
           <div className="skill-list">
             {other.map((skill) => (
-              <div key={skill.id}><span><b>{skill.label}</b><small>{skill.category}</small></span><strong>{skill.level}</strong></div>
+              <div key={skill.id}><span><b>{tr(skill.label)}</b><small>{tr(skill.category)}</small></span><strong>{tr(skill.level)}</strong></div>
             ))}
           </div>
         </details>

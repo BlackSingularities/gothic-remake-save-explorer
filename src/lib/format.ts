@@ -1,8 +1,9 @@
 import type { Language } from '../i18n/LanguageContext'
+import { currentLanguage } from '../i18n/tr'
 
 const dateLocale: Record<Language, string> = { pl: 'pl-PL', en: 'en-US' }
 
-export function formatDuration(seconds: number, compact = false, lang: Language = 'pl'): string {
+export function formatDuration(seconds: number, compact = false, lang: Language = currentLanguage()): string {
   if (!Number.isFinite(seconds) || seconds <= 0) return compact ? '0 min' : lang === 'pl' ? '0 min' : '0 min'
   const hours = Math.floor(seconds / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
@@ -16,7 +17,7 @@ export function formatBytes(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`
 }
 
-export function formatDate(iso: string, withTime = true, lang: Language = 'pl'): string {
+export function formatDate(iso: string, withTime = true, lang: Language = currentLanguage()): string {
   return new Intl.DateTimeFormat(dateLocale[lang], {
     day: '2-digit',
     month: 'short',
@@ -25,7 +26,7 @@ export function formatDate(iso: string, withTime = true, lang: Language = 'pl'):
   }).format(new Date(iso))
 }
 
-export function relativeDate(iso: string, lang: Language = 'pl'): string {
+export function relativeDate(iso: string, lang: Language = currentLanguage()): string {
   const diff = Date.now() - new Date(iso).getTime()
   const minutes = Math.max(0, Math.floor(diff / 60_000))
   if (lang === 'en') {
@@ -46,12 +47,12 @@ export function relativeDate(iso: string, lang: Language = 'pl'): string {
 
 const chapterRoman = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI']
 
-export function chapterLabel(chapter: number, lang: Language = 'pl'): string {
+export function chapterLabel(chapter: number, lang: Language = currentLanguage()): string {
   if (chapter <= 0) return lang === 'pl' ? 'Prolog' : 'Prologue'
   const roman = chapterRoman[chapter] || String(chapter)
   return lang === 'pl' ? `Rozdział ${roman}` : `Chapter ${roman}`
 }
 
-export function formatNumber(value: number, lang: Language = 'pl'): string {
+export function formatNumber(value: number, lang: Language = currentLanguage()): string {
   return value.toLocaleString(dateLocale[lang])
 }

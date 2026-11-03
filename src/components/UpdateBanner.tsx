@@ -1,6 +1,7 @@
 import { Download, RefreshCcw, Sparkles, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { UpdateInfo } from '../types'
+import { tr } from '../i18n/tr'
 
 type Phase =
   | { kind: 'available' }
@@ -28,11 +29,11 @@ export function UpdateBanner() {
     const api = window.gothic!
     setPhase({ kind: 'downloading', fraction: 0 })
     const downloaded = await api.downloadUpdate(info)
-    if (!downloaded.success || !downloaded.data) return setPhase({ kind: 'failed', message: downloaded.error || 'Pobieranie nie powiodło się' })
+    if (!downloaded.success || !downloaded.data) return setPhase({ kind: 'failed', message: tr(downloaded.error || 'Pobieranie nie powiodło się') })
     setPhase({ kind: 'installing' })
     // Po udanej instalacji instalator zamyka aplikację i uruchamia nową wersję.
     const installed = await api.installUpdate(downloaded.data)
-    if (!installed.success) setPhase({ kind: 'failed', message: installed.error || 'Instalacja nie powiodła się' })
+    if (!installed.success) setPhase({ kind: 'failed', message: tr(installed.error || 'Instalacja nie powiodła się') })
   }
 
   const busy = phase.kind === 'downloading' || phase.kind === 'installing'
@@ -42,19 +43,19 @@ export function UpdateBanner() {
     <div className="update-banner" role="status">
       <Sparkles size={18} />
       <div className="update-banner__text">
-        <strong>Dostępna nowa wersja {info.version}</strong>
-        {phase.kind === 'available' && <p>Aktualizacja zainstaluje się w tym samym folderze. Windows poprosi o zgodę administratora.</p>}
-        {phase.kind === 'downloading' && <p>Pobieranie… {Math.round(phase.fraction * 100)}%</p>}
-        {phase.kind === 'installing' && <p>Instalowanie… Potwierdź zgodę administratora, jeśli Windows o nią poprosi. Aplikacja uruchomi się ponownie.</p>}
+        <strong>{tr('Dostępna nowa wersja {0}', info.version)}</strong>
+        {phase.kind === 'available' && <p>{tr('Aktualizacja zainstaluje się w tym samym folderze. Windows poprosi o zgodę administratora.')}</p>}
+        {phase.kind === 'downloading' && <p>{tr('Pobieranie… {0}%', Math.round(phase.fraction * 100))}</p>}
+        {phase.kind === 'installing' && <p>{tr('Instalowanie… Potwierdź zgodę administratora, jeśli Windows o nią poprosi. Aplikacja uruchomi się ponownie.')}</p>}
         {phase.kind === 'failed' && <p className="update-banner__error">{phase.message}</p>}
         {phase.kind === 'downloading' && <div className="update-banner__bar"><span style={{ width: `${Math.round(phase.fraction * 100)}%` }} /></div>}
       </div>
       {!busy && (
         <button className="button button--primary" onClick={() => void install()}>
-          {phase.kind === 'failed' ? <><RefreshCcw size={16} /> Spróbuj ponownie</> : <><Download size={16} /> Zainstaluj{sizeMb}</>}
+          {phase.kind === 'failed' ? <><RefreshCcw size={16} /> {tr('Spróbuj ponownie')}</> : <><Download size={16} /> {tr('Zainstaluj')}{sizeMb}</>}
         </button>
       )}
-      {!busy && <button className="icon-button" aria-label="Później" onClick={() => setHidden(true)}><X size={16} /></button>}
+      {!busy && <button className="icon-button" aria-label={tr('Później')} onClick={() => setHidden(true)}><X size={16} /></button>}
     </div>
   )
 }

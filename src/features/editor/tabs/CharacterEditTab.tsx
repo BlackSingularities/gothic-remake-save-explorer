@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { SearchField } from '../../../components/Controls'
 import type { PendingEditsController } from '../usePendingEdits'
 import type { DeepSaveDetails, LocationSpotOption, ParsedSave } from '../../../types'
+import { tr } from '../../../i18n/tr'
 
 const editableAttributes = ['Health', 'MaxHealth', 'Mana', 'MaxMana', 'Strength', 'Dexterity', 'Level', 'Experience']
 
@@ -16,17 +17,17 @@ function AttributeField({ id, label, current, controller }: { id: string; label:
   const apply = () => {
     const parsed = Number(value)
     if (!Number.isFinite(parsed)) return
-    controller.addEdit(targetKey, { kind: 'attribute', id, label, value: parsed, previous: current }, `${label}: ${current} → ${parsed}`)
+    controller.addEdit(targetKey, { kind: 'attribute', id, label, value: parsed, previous: current }, `${tr(label)}: ${current} → ${parsed}`)
   }
 
   return (
     <div className="editor-field">
-      <span>{label}</span>
+      <span>{tr(label)}</span>
       <form className="editor-field__row" onSubmit={(event) => { event.preventDefault(); apply() }}>
         <input type="number" value={value} onChange={(event) => setValue(event.target.value)} />
-        <button className="button button--secondary" type="submit"><Check size={14} /> Zastosuj</button>
+        <button className="button button--secondary" type="submit"><Check size={14} /> {tr('Zastosuj')}</button>
       </form>
-      {queuedValue !== undefined && <small className="editor-field__queued">w kolejce: {queuedValue}</small>}
+      {queuedValue !== undefined && <small className="editor-field__queued">{tr('w kolejce: {0}', queuedValue)}</small>}
     </div>
   )
 }
@@ -50,8 +51,8 @@ function TeleportPicker({ controller }: { controller: PendingEditsController }) 
 
   return (
     <div className="editor-add-item">
-      <SearchField value={query} onChange={setQuery} placeholder="Szukaj miejsca (np. Stary Obóz, Kuźnia)…" />
-      {queued && queued.operation.kind === 'position' && <p className="tab-note">W kolejce: {queued.summary}</p>}
+      <SearchField value={query} onChange={setQuery} placeholder={tr('Szukaj miejsca (np. Stary Obóz, Kuźnia)…')} />
+      {queued && queued.operation.kind === 'position' && <p className="tab-note">{tr('W kolejce: {0}', queued.summary)}</p>}
       <div className="editor-add-item__results">
         {results.map((spot, index) => (
           <button
@@ -60,7 +61,7 @@ function TeleportPicker({ controller }: { controller: PendingEditsController }) 
             onClick={() => controller.addEdit(
               'position',
               { kind: 'position', x: spot.x, y: spot.y, z: spot.z, yaw: spot.yaw, label: spot.name },
-              `Teleportacja → ${spot.name} (${spot.area})`,
+              tr('Teleportacja → {0} ({1})', spot.name, spot.area),
             )}
           >
             <MapPinned size={14} />
@@ -68,7 +69,7 @@ function TeleportPicker({ controller }: { controller: PendingEditsController }) 
             <span>{spot.area}</span>
           </button>
         ))}
-        {!results.length && query && <div className="inline-empty">Brak wyników</div>}
+        {!results.length && query && <div className="inline-empty">{tr('Brak wyników')}</div>}
       </div>
     </div>
   )
@@ -83,23 +84,23 @@ export function CharacterEditTab({ details, save, controller }: { details: DeepS
   return (
     <div className="deep-tab-panel">
       <section className="drawer-section deep-section">
-        <div className="section-heading"><div><p className="eyebrow">TOŻSAMOŚĆ ZAPISU</p><h3>Nazwa nowej kopii</h3></div></div>
+        <div className="section-heading"><div><p className="eyebrow">{tr('TOŻSAMOŚĆ ZAPISU')}</p><h3>{tr('Nazwa nowej kopii')}</h3></div></div>
         <div className="editor-field">
           <form
             className="editor-field__row"
             onSubmit={(event) => {
               event.preventDefault()
-              controller.addEdit('saveName', { kind: 'saveName', value: name, previous: save.displayName }, `Nazwa zapisu → ${name}`)
+              controller.addEdit('saveName', { kind: 'saveName', value: name, previous: save.displayName }, tr('Nazwa zapisu → {0}', name))
             }}
           >
             <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
-            <button className="button button--secondary" type="submit"><Check size={14} /> Zastosuj</button>
+            <button className="button button--secondary" type="submit"><Check size={14} /> {tr('Zastosuj')}</button>
           </form>
-          {nameQueued && <small className="editor-field__queued">w kolejce: {nameQueued.operation.kind === 'saveName' ? nameQueued.operation.value : ''}</small>}
+          {nameQueued && <small className="editor-field__queued">{tr('w kolejce: {0}', nameQueued.operation.kind === 'saveName' ? nameQueued.operation.value : '')}</small>}
         </div>
       </section>
       <section className="drawer-section deep-section">
-        <div className="section-heading"><div><p className="eyebrow">PARAMETRY BEZIMIENNEGO</p><h3>Atrybuty postaci</h3></div></div>
+        <div className="section-heading"><div><p className="eyebrow">{tr('PARAMETRY BEZIMIENNEGO')}</p><h3>{tr('Atrybuty postaci')}</h3></div></div>
         <div className="editor-field-grid">
           {editableAttributes.map((id) => {
             const attribute = details.character.attributes.find((entry) => entry.id === id)
@@ -109,10 +110,10 @@ export function CharacterEditTab({ details, save, controller }: { details: DeepS
         </div>
       </section>
       <section className="drawer-section deep-section">
-        <div className="section-heading"><div><p className="eyebrow">POZYCJA W ŚWIECIE</p><h3>Teleportacja</h3></div></div>
+        <div className="section-heading"><div><p className="eyebrow">{tr('POZYCJA W ŚWIECIE')}</p><h3>{tr('Teleportacja')}</h3></div></div>
         {details.character.position && (
           <p className="tab-note">
-            Obecnie: X {Math.round(details.character.position.x)} · Y {Math.round(details.character.position.y)} · Z {Math.round(details.character.position.z)}
+            {tr('Obecnie: {0}', `X ${Math.round(details.character.position.x)} · Y ${Math.round(details.character.position.y)} · Z ${Math.round(details.character.position.z)}`)}
           </p>
         )}
         <TeleportPicker controller={controller} />

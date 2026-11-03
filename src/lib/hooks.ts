@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ApiResult } from '../types'
+import { tr } from '../i18n/tr'
 
 export interface AsyncState<T> {
   data: T | null
@@ -26,11 +27,11 @@ export function useAsyncResource<T>(
       .then((result) => {
         if (requestId.current !== id) return
         if (result.success && result.data !== undefined) setState({ data: result.data, loading: false, error: null })
-        else setState({ data: null, loading: false, error: result.error || 'Nie udało się wczytać danych' })
+        else setState({ data: null, loading: false, error: result.error || tr('Nie udało się wczytać danych') })
       })
       .catch((error: unknown) => {
         if (requestId.current !== id) return
-        setState({ data: null, loading: false, error: error instanceof Error ? error.message : 'Nie udało się wczytać danych' })
+        setState({ data: null, loading: false, error: error instanceof Error ? error.message : tr('Nie udało się wczytać danych') })
       })
     // deps intentionally drive refetching; fetcher is expected to close over the same identity per render.
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -4,13 +4,14 @@ import { Modal } from '../../../components/Modal'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
 import type { TraderDetail, TraderSummary } from '../../../types'
+import { tr } from '../../../i18n/tr'
 
 function TraderDetailPanel({ trader, onClose }: { trader: TraderDetail; onClose: () => void }) {
   return (
     <div className="npc-detail-panel">
       <div className="npc-detail-panel__head">
         <h4>{trader.name}</h4>
-        <button className="icon-button" onClick={onClose} aria-label="Zamknij"><X size={16} /></button>
+        <button className="icon-button" onClick={onClose} aria-label={tr('Zamknij')}><X size={16} /></button>
       </div>
       <div className="inventory-list inventory-list--compact">
         {trader.items.map((item) => (
@@ -19,12 +20,12 @@ function TraderDetailPanel({ trader, onClose }: { trader: TraderDetail; onClose:
             <div>
               <strong>{item.name}</strong>
               {item.count !== item.defaultCount && (
-                <small>{item.count > item.defaultCount ? `+${item.count - item.defaultCount} od gracza` : `sprzedane: ${item.defaultCount - item.count}`}</small>
+                <small>{item.count > item.defaultCount ? tr('+{0} od gracza', item.count - item.defaultCount) : tr('sprzedane: {0}', item.defaultCount - item.count)}</small>
               )}
             </div>
           </div>
         ))}
-        {!trader.items.length && <div className="inline-empty">Pusty stok</div>}
+        {!trader.items.length && <div className="inline-empty">{tr('Pusty stok')}</div>}
       </div>
     </div>
   )
@@ -40,7 +41,7 @@ export function TradersTab({ filePath }: { filePath: string }) {
 
   return (
     <div className="deep-tab-panel">
-      <TabPanelState loading={traders.loading} error={traders.error} empty={!traders.loading && !traders.data?.length} emptyLabel="Brak handlarzy w tym zapisie" />
+      <TabPanelState loading={traders.loading} error={traders.error} empty={!traders.loading && !traders.data?.length} emptyLabel={tr('Brak handlarzy w tym zapisie')} />
       {selectedIndex !== null && (
         <Modal onClose={() => setSelectedIndex(null)}>
           <TabPanelState loading={detail.loading} error={detail.error} />
@@ -53,8 +54,8 @@ export function TradersTab({ filePath }: { filePath: string }) {
             <button key={trader.index} className="trader-row" onClick={() => setSelectedIndex(trader.index)}>
               <strong>{trader.name}</strong>
               <span><Coins size={13} /> {trader.ore}</span>
-              <span>{trader.itemCount} pozycji</span>
-              {trader.traded && <b>HANDLOWANO</b>}
+              <span>{tr('{0} pozycji', trader.itemCount)}</span>
+              {trader.traded && <b>{tr('HANDLOWANO')}</b>}
             </button>
           ))}
         </div>

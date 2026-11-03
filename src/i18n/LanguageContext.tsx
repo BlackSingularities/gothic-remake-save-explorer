@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
+import { setTrLanguage } from './tr'
 import { en, pl, type TranslationKey } from './translations'
 
 export type Language = 'pl' | 'en'
@@ -24,6 +25,7 @@ function readStoredLanguage(): Language {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>(readStoredLanguage)
+  setTrLanguage(language)
 
   const value = useMemo<LanguageContextValue>(() => {
     const dictionary = dictionaries[language]

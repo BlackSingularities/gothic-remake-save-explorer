@@ -5,6 +5,7 @@ import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource } from '../../../lib/hooks'
 import type { CatalogItemOption, TraderDetail, TraderSummary } from '../../../types'
 import type { PendingEditsController } from '../usePendingEdits'
+import { tr } from '../../../i18n/tr'
 
 function StockRow({ index, itemId, itemPath, name, count, controller }: { index: number; itemId: string; itemPath: string; name: string; count: number; controller: PendingEditsController }) {
   const stockKey = `trader-stock:${index}:${itemId}`
@@ -19,8 +20,8 @@ function StockRow({ index, itemId, itemPath, name, count, controller }: { index:
     return (
       <div className="editor-item-row is-removed">
         <strong>{name}</strong>
-        <span>oznaczono do usunięcia</span>
-        <button className="icon-button" onClick={() => controller.removeEdit(queuedRemove.editId)} aria-label="Cofnij">↺</button>
+        <span>{tr('oznaczono do usunięcia')}</span>
+        <button className="icon-button" onClick={() => controller.removeEdit(queuedRemove.editId)} aria-label={tr('Cofnij')}>↺</button>
       </div>
     )
   }
@@ -28,23 +29,23 @@ function StockRow({ index, itemId, itemPath, name, count, controller }: { index:
   const apply = () => {
     const parsed = Math.max(1, Math.round(Number(value)))
     if (!Number.isFinite(parsed)) return
-    controller.addEdit(stockKey, { kind: 'traderStock', index, itemId, itemPath, itemName: name, count: parsed, previous: count }, `${name} u handlarza: ${count} → ${parsed}`)
+    controller.addEdit(stockKey, { kind: 'traderStock', index, itemId, itemPath, itemName: name, count: parsed, previous: count }, tr('{0} u handlarza: {1} → {2}', name, count, parsed))
   }
 
   return (
     <form className="editor-item-row" onSubmit={(event) => { event.preventDefault(); apply() }}>
       <strong>{name}</strong>
       <input type="number" min={1} value={value} onChange={(event) => setValue(event.target.value)} />
-      <button className="icon-button" type="submit" title="Zastosuj ilość"><Check size={14} /></button>
+      <button className="icon-button" type="submit" title={tr('Zastosuj ilość')}><Check size={14} /></button>
       <button
         className="icon-button"
         type="button"
-        title="Usuń pozycję ze stoku"
-        onClick={() => controller.addEdit(removeKey, { kind: 'traderItemRemove', index, itemPath, itemName: name }, `Usuń ze stoku: ${name}`)}
+        title={tr('Usuń pozycję ze stoku')}
+        onClick={() => controller.addEdit(removeKey, { kind: 'traderItemRemove', index, itemPath, itemName: name }, tr('Usuń ze stoku: {0}', name))}
       >
         <Trash2 size={14} />
       </button>
-      {queuedCount && <small className="editor-field__queued">w kolejce: {queuedCount.operation.kind === 'traderStock' ? queuedCount.operation.count : ''}</small>}
+      {queuedCount && <small className="editor-field__queued">{tr('w kolejce: {0}', queuedCount.operation.kind === 'traderStock' ? queuedCount.operation.count : '')}</small>}
     </form>
   )
 }
@@ -67,7 +68,7 @@ function AddStockPanel({ index, controller }: { index: number; controller: Pendi
 
   return (
     <div className="editor-add-item">
-      <SearchField value={query} onChange={setQuery} placeholder="Dodaj przedmiot do stoku…" />
+      <SearchField value={query} onChange={setQuery} placeholder={tr('Dodaj przedmiot do stoku…')} />
       <div className="editor-add-item__results">
         {results.map((item) => {
           const key = `trader-add:${index}:${item.path}`
@@ -75,15 +76,15 @@ function AddStockPanel({ index, controller }: { index: number; controller: Pendi
           return (
             <div key={item.path} className="editor-item-row">
               <strong>{item.name}</strong>
-              <span>{item.category}</span>
+              <span>{tr(item.category)}</span>
               <button
                 className="icon-button"
                 disabled={queued}
-                onClick={() => controller.addEdit(key, { kind: 'traderItemAdd', index, itemPath: item.path, itemName: item.name, count: 1 }, `Dodaj do stoku: ${item.name}`)}
+                onClick={() => controller.addEdit(key, { kind: 'traderItemAdd', index, itemPath: item.path, itemName: item.name, count: 1 }, tr('Dodaj do stoku: {0}', item.name))}
               >
                 <Plus size={14} />
               </button>
-              {queued && <b>w kolejce</b>}
+              {queued && <b>{tr('w kolejce')}</b>}
             </div>
           )
         })}
@@ -102,13 +103,13 @@ export function TradersEditTab({ filePath, controller }: { filePath: string; con
 
   return (
     <div className="deep-tab-panel">
-      <TabPanelState loading={traders.loading} error={traders.error} empty={!traders.loading && !traders.data?.length} emptyLabel="Brak handlarzy w tym zapisie" />
+      <TabPanelState loading={traders.loading} error={traders.error} empty={!traders.loading && !traders.data?.length} emptyLabel={tr('Brak handlarzy w tym zapisie')} />
       {traders.data && (
         <div className="trader-list">
           {traders.data.map((trader) => (
             <button key={trader.index} className={`trader-row${selectedIndex === trader.index ? ' is-active' : ''}`} onClick={() => setSelectedIndex(trader.index)}>
               <strong>{trader.name}</strong>
-              <span>{trader.itemCount} pozycji</span>
+              <span>{tr('{0} pozycji', trader.itemCount)}</span>
             </button>
           ))}
         </div>

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { SearchField } from '../../../components/Controls'
 import type { DeepSaveDetails, QuestEntry } from '../../../types'
 import type { PendingEditsController } from '../usePendingEdits'
+import { tr } from '../../../i18n/tr'
 
 const states: QuestEntry['state'][] = ['available', 'running', 'succeeded', 'failed']
 const stateLabels: Record<string, string> = { available: 'Available', running: 'Running', succeeded: 'Succeeded', failed: 'Failed' }
@@ -25,13 +26,13 @@ function QuestRow({ quest, controller }: { quest: QuestEntry; controller: Pendin
     <form className="editor-item-row" onSubmit={(event) => { event.preventDefault(); apply() }}>
       <div>
         <strong>{quest.name}</strong>
-        <span>{quest.group}</span>
+        <span>{tr(quest.group)}</span>
       </div>
       <select value={state} onChange={(event) => setState(event.target.value)}>
         {states.map((value) => <option key={value} value={stateLabels[value]}>{stateLabels[value]}</option>)}
       </select>
-      <button className="icon-button" type="submit" title="Zastosuj" disabled={!quest.statePath.length}><Check size={14} /></button>
-      {queuedState && <small className="editor-field__queued">w kolejce: {queuedState}</small>}
+      <button className="icon-button" type="submit" title={tr('Zastosuj')} disabled={!quest.statePath.length}><Check size={14} /></button>
+      {queuedState && <small className="editor-field__queued">{tr('w kolejce: {0}', queuedState)}</small>}
     </form>
   )
 }
@@ -45,12 +46,12 @@ export function QuestsEditTab({ details, controller }: { details: DeepSaveDetail
 
   return (
     <div className="deep-tab-panel">
-      <p className="tab-note">Klasyczny przykład: zablokowana Próba Ognia (OBJ_WATERFALL / OBJ_SEA) na stanie „Running” — ustaw na „Succeeded”, żeby odblokować dalszy ciąg.</p>
-      <SearchField value={query} onChange={setQuery} placeholder="Filtruj zadania…" />
+      <p className="tab-note">{tr('Klasyczny przykład: zablokowana Próba Ognia (OBJ_WATERFALL / OBJ_SEA) na stanie „Running” — ustaw na „Succeeded”, żeby odblokować dalszy ciąg.')}</p>
+      <SearchField value={query} onChange={setQuery} placeholder={tr('Filtruj zadania…')} />
       <section className="drawer-section deep-section">
         <div className="editor-item-list">
           {filtered.map((quest) => <QuestRow key={quest.id} quest={quest} controller={controller} />)}
-          {!filtered.length && <div className="inline-empty">Brak pasujących zadań</div>}
+          {!filtered.length && <div className="inline-empty">{tr('Brak pasujących zadań')}</div>}
         </div>
       </section>
     </div>

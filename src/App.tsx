@@ -9,6 +9,7 @@ import { SettingsPage } from './features/settings/SettingsPage'
 import { StatsPage } from './features/stats/StatsPage'
 import { LanguageProvider, useT } from './i18n/LanguageContext'
 import type { ParsedSave, ScanResult } from './types'
+import { tr } from './i18n/tr'
 
 type Page = 'explorer' | 'stats' | 'settings'
 type ProfileFilter = 'all' | number
@@ -23,10 +24,10 @@ function EmptyState({ onChoose }: { onChoose: () => void }) {
   return (
     <div className="empty-state">
       <BrandMark />
-      <p className="eyebrow">ARCHIWUM NIEAKTYWNE</p>
-      <h2>Nie znaleziono zapisów</h2>
-      <p>Wskaż katalog zawierający pliki <code>G1R-*.sav</code>. Domyślna lokalizacja zostanie zapamiętana.</p>
-      <button className="button button--primary" onClick={onChoose}><FolderOpen size={17} /> Wskaż katalog zapisów</button>
+      <p className="eyebrow">{tr('ARCHIWUM NIEAKTYWNE')}</p>
+      <h2>{tr('Nie znaleziono zapisów')}</h2>
+      <p>{tr('Wskaż katalog zawierający pliki {0}. Domyślna lokalizacja zostanie zapamiętana.', 'G1R-*.sav')}</p>
+      <button className="button button--primary" onClick={onChoose}><FolderOpen size={17} /> {tr('Wskaż katalog zapisów')}</button>
     </div>
   )
 }
@@ -53,7 +54,7 @@ function AppShell() {
       const result = window.gothic ? await window.gothic.scan() : demoScan
       setScan(result)
     } catch (error) {
-      notify('Nie udało się odświeżyć archiwum', error instanceof Error ? error.message : undefined, true)
+      notify(tr('Nie udało się odświeżyć archiwum'), error instanceof Error ? tr(error.message) : undefined, true)
     } finally {
       setLoading(false)
       setRefreshing(false)
@@ -65,7 +66,7 @@ function AppShell() {
     if (!window.gothic) return
     return window.gothic.onSavesChanged(() => {
       void reload(true)
-      notify('Wykryto nowy zapis', 'Archiwum zostało automatycznie odświeżone')
+      notify(tr('Wykryto nowy zapis'), tr('Archiwum zostało automatycznie odświeżone'))
     })
   }, [reload, notify])
 
@@ -75,20 +76,20 @@ function AppShell() {
   }, [scan, profile])
 
   const chooseDirectory = async () => {
-    if (!window.gothic) return notify('Wybór katalogu jest dostępny w aplikacji desktopowej')
-    const result = await window.gothic.chooseDirectory()
+    if (!window.gothic) return notify(tr('Wybór katalogu jest dostępny w aplikacji desktopowej'))
+    const result = await window.gothic.chooseDirectory(tr('Wskaż katalog zapisów Gothic 1 Remake'))
     if (result) {
       setScan(result)
       setProfile('all')
-      notify('Katalog zapisów podłączony', `${result.saves.length} plików GSAV`)
+      notify(tr('Katalog zapisów podłączony'), tr('{0} plików GSAV', result.saves.length))
     }
   }
 
   const exportData = async (format: 'json' | 'csv') => {
-    if (!window.gothic) return notify(`Eksport ${format.toUpperCase()} jest gotowy w aplikacji desktopowej`)
-    const result = await window.gothic.exportData(format)
-    if (result.success) notify('Dane wyeksportowane', result.destination)
-    else if (!result.cancelled) notify('Eksport nie powiódł się', result.error, true)
+    if (!window.gothic) return notify(tr('Eksport {0} jest gotowy w aplikacji desktopowej', format.toUpperCase()))
+    const result = await window.gothic.exportData(format, tr('Eksportuj kronikę'))
+    if (result.success) notify(tr('Dane wyeksportowane'), result.destination)
+    else if (!result.cancelled) notify(tr('Eksport nie powiódł się'), result.error && tr(result.error), true)
   }
 
   const navigate = (nextPage: Page) => {
@@ -98,7 +99,7 @@ function AppShell() {
   }
 
   if (loading) {
-    return <div className="boot-screen"><BrandMark /><div className="boot-line"><span /></div><p>Wczytywanie archiwum…</p></div>
+    return <div className="boot-screen"><BrandMark /><div className="boot-line"><span /></div><p>{tr('Wczytywanie archiwum…')}</p></div>
   }
 
   return (
@@ -111,9 +112,9 @@ function AppShell() {
           <button className={page === 'stats' ? 'is-active' : ''} onClick={() => navigate('stats')}><ScrollText size={18} /><span>{t('nav.stats')}</span><i /></button>
           <button className={page === 'settings' ? 'is-active' : ''} onClick={() => navigate('settings')}><Settings size={18} /><span>{t('nav.settings')}</span><i /></button>
         </nav>
-        <div className="sidebar__footer"><Shield size={14} /><span>TYLKO ODCZYT<br /><small>Pliki gry są bezpieczne</small></span></div>
+        <div className="sidebar__footer"><Shield size={14} /><span>{tr('TYLKO ODCZYT')}<br /><small>{tr('Pliki gry są bezpieczne')}</small></span></div>
       </aside>
-      {sidebarOpen && <button className="sidebar-scrim" aria-label="Zamknij menu" onClick={() => setSidebarOpen(false)} />}
+      {sidebarOpen && <button className="sidebar-scrim" aria-label={tr('Zamknij menu')} onClick={() => setSidebarOpen(false)} />}
 
       <main className="main-content">
         <header className="topbar">
@@ -125,7 +126,7 @@ function AppShell() {
             {scan && scan.profiles.length > 1 && (
               <div className="segmented profile-switch">
                 <button className={profile === 'all' ? 'is-active' : ''} onClick={() => setProfile('all')}>{t('common.all')}</button>
-                {scan.profiles.map((item) => <button key={item.id} className={profile === item.id ? 'is-active' : ''} onClick={() => setProfile(item.id)}>Profil {item.id + 1}</button>)}
+                {scan.profiles.map((item) => <button key={item.id} className={profile === item.id ? 'is-active' : ''} onClick={() => setProfile(item.id)}>{tr('Profil {0}', item.id + 1)}</button>)}
               </div>
             )}
             <div className="folder-chip" title={scan?.directory}><FolderOpen size={15} /><span>{scan?.directory.split(/[\\/]/).slice(-3).join(' / ')}</span></div>
@@ -150,7 +151,7 @@ function AppShell() {
           save={selectedSave}
           scan={scan}
           onClose={() => setSelectedSave(null)}
-          onCommitted={(slotName) => notify('Dodano nowy zapis', slotName)}
+          onCommitted={(slotName) => notify(tr('Dodano nowy zapis'), slotName)}
         />
       )}
       {toast && (

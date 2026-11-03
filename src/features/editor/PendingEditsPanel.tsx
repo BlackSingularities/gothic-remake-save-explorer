@@ -2,6 +2,16 @@ import { Check, Loader2, Save, Trash2, X } from 'lucide-react'
 import { useState } from 'react'
 import type { EditorCommitResult, ParsedSave, ScanResult } from '../../types'
 import type { PendingEditsController } from './usePendingEdits'
+import { tr } from '../../i18n/tr'
+
+/** Kroki zapisu z procesu głównego – część z nich zawiera liczby. */
+function trStep(step: string): string {
+  const batch = step.match(/^Zapis partii (\d+)\/(\d+)$/)
+  if (batch) return tr('Zapis partii {0}/{1}', batch[1], batch[2])
+  const slot = step.match(/^Dodano jako nowy slot (.+)$/)
+  if (slot) return tr('Dodano jako nowy slot {0}', slot[1])
+  return tr(step)
+}
 
 export function PendingEditsPanel({
   save, scan, controller, onCommitted,
@@ -29,15 +39,15 @@ export function PendingEditsPanel({
   return (
     <aside className="pending-edits">
       <div className="pending-edits__head">
-        <h3>Kolejka zmian</h3>
+        <h3>{tr('Kolejka zmian')}</h3>
         <span>{controller.pending.length}</span>
       </div>
-      {!controller.pending.length && <p className="tab-note">Wybierz zmiany w zakładkach po lewej — pojawią się tutaj przed zapisaniem.</p>}
+      {!controller.pending.length && <p className="tab-note">{tr('Wybierz zmiany w zakładkach po lewej — pojawią się tutaj przed zapisaniem.')}</p>}
       <div className="pending-edits__list">
         {controller.pending.map((edit) => (
           <div key={edit.editId} className="pending-edits__item">
             <span>{edit.summary}</span>
-            <button className="icon-button" onClick={() => controller.removeEdit(edit.editId)} aria-label="Usuń z kolejki"><Trash2 size={13} /></button>
+            <button className="icon-button" onClick={() => controller.removeEdit(edit.editId)} aria-label={tr('Usuń z kolejki')}><Trash2 size={13} /></button>
           </div>
         ))}
       </div>
@@ -46,17 +56,17 @@ export function PendingEditsPanel({
         <div className="pending-edits__commit">
           {scan.profiles.length > 1 && (
             <label className="pending-edits__profile">
-              <span>Docelowy profil</span>
+              <span>{tr('Docelowy profil')}</span>
               <select value={profileId} onChange={(event) => setProfileId(Number(event.target.value))}>
-                {scan.profiles.map((profile) => <option key={profile.id} value={profile.id}>Profil {profile.id + 1}</option>)}
+                {scan.profiles.map((profile) => <option key={profile.id} value={profile.id}>{tr('Profil {0}', profile.id + 1)}</option>)}
               </select>
             </label>
           )}
           <button className="button button--primary button--full" onClick={() => void commit()} disabled={committing}>
             {committing ? <Loader2 size={16} className="is-spinning" /> : <Save size={16} />}
-            Zapisz jako nowy zapis
+            {tr('Zapisz jako nowy zapis')}
           </button>
-          <p className="pending-edits__note">Oryginalny plik nigdy nie jest modyfikowany — zmiany trafią do nowego slotu w katalogu zapisów.</p>
+          <p className="pending-edits__note">{tr('Oryginalny plik nigdy nie jest modyfikowany — zmiany trafią do nowego slotu w katalogu zapisów.')}</p>
         </div>
       )}
 
@@ -64,10 +74,10 @@ export function PendingEditsPanel({
         <div className={`pending-edits__result${result.success ? ' is-success' : ' is-error'}`}>
           {result.success ? <Check size={16} /> : <X size={16} />}
           <div>
-            <strong>{result.success ? `Dodano nowy zapis ${result.slotName}` : 'Zapis nie powiódł się'}</strong>
-            {result.error && <p>{result.error}</p>}
+            <strong>{result.success ? tr('Dodano nowy zapis {0}', result.slotName ?? '') : tr('Zapis nie powiódł się')}</strong>
+            {result.error && <p>{tr(result.error)}</p>}
             <ul>
-              {result.steps.map((step) => <li key={step.step} className={step.ok ? 'is-ok' : 'is-fail'}>{step.step}{step.detail ? ` — ${step.detail}` : ''}</li>)}
+              {result.steps.map((step) => <li key={step.step} className={step.ok ? 'is-ok' : 'is-fail'}>{trStep(step.step)}{step.detail ? ` — ${tr(step.detail)}` : ''}</li>)}
             </ul>
           </div>
         </div>

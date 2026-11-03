@@ -2,6 +2,7 @@ import { Check } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { DeepSaveDetails, SkillCatalogEntry } from '../../../types'
 import type { PendingEditsController } from '../usePendingEdits'
+import { tr } from '../../../i18n/tr'
 
 function SkillRow({ entry, currentTier, controller }: { entry: SkillCatalogEntry; currentTier: string; controller: PendingEditsController }) {
   const targetKey = `skill:${entry.base}`
@@ -11,17 +12,17 @@ function SkillRow({ entry, currentTier, controller }: { entry: SkillCatalogEntry
   const [tier, setTier] = useState(queuedTier ?? fallbackTier)
   useEffect(() => setTier(queuedTier ?? fallbackTier), [queuedTier, fallbackTier])
 
-  const apply = () => controller.addEdit(targetKey, { kind: 'skill', base: entry.base, label: entry.label, tier, previousTier: currentTier }, `${entry.label}: ${currentTier} → ${tier}`)
+  const apply = () => controller.addEdit(targetKey, { kind: 'skill', base: entry.base, label: entry.label, tier, previousTier: currentTier }, `${tr(entry.label)}: ${currentTier} → ${tier}`)
 
   return (
     <form className="editor-item-row" onSubmit={(event) => { event.preventDefault(); apply() }}>
-      <strong>{entry.label}</strong>
+      <strong>{tr(entry.label)}</strong>
       <span>{currentTier}</span>
       <select value={tier} onChange={(event) => setTier(event.target.value)}>
         {entry.tiers.map((option) => <option key={option} value={option}>{option}</option>)}
       </select>
-      <button className="icon-button" type="submit" title="Zastosuj"><Check size={14} /></button>
-      {queuedTier && <small className="editor-field__queued">w kolejce: {queuedTier}</small>}
+      <button className="icon-button" type="submit" title={tr('Zastosuj')}><Check size={14} /></button>
+      {queuedTier && <small className="editor-field__queued">{tr('w kolejce: {0}', queuedTier)}</small>}
     </form>
   )
 }
@@ -38,7 +39,7 @@ export function SkillsEditTab({ details, controller }: { details: DeepSaveDetail
     return () => { active = false }
   }, [])
 
-  if (!catalog) return <div className="inline-empty">Wczytywanie katalogu umiejętności…</div>
+  if (!catalog) return <div className="inline-empty">{tr('Wczytywanie katalogu umiejętności…')}</div>
 
   const currentByBase = new Map(details.skills.map((skill) => [skill.id, skill]))
   const byCategory = new Map<string, SkillCatalogEntry[]>()
@@ -50,10 +51,10 @@ export function SkillsEditTab({ details, controller }: { details: DeepSaveDetail
 
   return (
     <div className="deep-tab-panel">
-      <p className="tab-note">Zmiana poziomu opiera się na katalogu umiejętności gry — nauczenie umiejętności, której postać jeszcze nie ma, jest oznaczone przez twórców jako eksperymentalne.</p>
+      <p className="tab-note">{tr('Zmiana poziomu opiera się na katalogu umiejętności gry — nauczenie umiejętności, której postać jeszcze nie ma, jest oznaczone przez twórców jako eksperymentalne.')}</p>
       {[...byCategory.entries()].map(([category, entries]) => (
         <section className="drawer-section deep-section" key={category}>
-          <div className="section-heading"><h3>{category}</h3></div>
+          <div className="section-heading"><h3>{tr(category)}</h3></div>
           <div className="editor-item-list">
             {entries.map((entry) => (
               <SkillRow key={entry.base} entry={entry} currentTier={currentByBase.get(entry.base)?.level || 'Untrained'} controller={controller} />

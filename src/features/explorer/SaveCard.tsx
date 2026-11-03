@@ -2,6 +2,7 @@ import { ChevronRight, Clock3, Eye, ScrollText } from 'lucide-react'
 import { useLanguage } from '../../i18n/LanguageContext'
 import { chapterLabel, formatBytes, formatDuration, relativeDate } from '../../lib/format'
 import type { ParsedSave, SaveKind } from '../../types'
+import { tr } from '../../i18n/tr'
 
 const kindLabels: Record<'pl' | 'en', Record<SaveKind, string>> = {
   pl: { manual: 'Ręczny', quick: 'Szybki', auto: 'Autozapis' },
@@ -18,7 +19,7 @@ export function SaveCard({ save, onOpen }: { save: ParsedSave; onOpen: () => voi
   return (
     <button className="save-card" onClick={onOpen}>
       <div className="save-card__image">
-        {save.screenshot ? <img src={save.screenshot} alt="" /> : <div className="save-card__placeholder"><Eye size={24} /><span>Brak miniatury</span></div>}
+        {save.screenshot ? <img src={save.screenshot} alt="" /> : <div className="save-card__placeholder"><Eye size={24} /><span>{tr('Brak miniatury')}</span></div>}
         <KindBadge kind={save.kind} />
       </div>
       <div className="save-card__body">
@@ -55,7 +56,7 @@ export function SaveListRow({ save, index, onOpen }: { save: ParsedSave; index: 
       </button>
       <div className="archive-extra">
         <span>{formatBytes(save.sizeBytes)}</span>
-        <span>{language === 'pl' ? 'Profil' : 'Profile'} {save.profileId + 1}</span>
+        <span>{tr('Profil {0}', save.profileId + 1)}</span>
         <span>{save.difficulty}</span>
       </div>
     </div>

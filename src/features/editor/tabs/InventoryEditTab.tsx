@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { SearchField } from '../../../components/Controls'
 import type { CatalogItemOption, DeepSaveDetails } from '../../../types'
 import type { PendingEditsController } from '../usePendingEdits'
+import { tr } from '../../../i18n/tr'
 
 function ExistingItemRow({ id, name, count, controller }: { id: string; name: string; count: number; controller: PendingEditsController }) {
   const countKey = `item-count:${id}`
@@ -23,8 +24,8 @@ function ExistingItemRow({ id, name, count, controller }: { id: string; name: st
     return (
       <div className="editor-item-row is-removed">
         <strong>{name}</strong>
-        <span>oznaczono do usunięcia</span>
-        <button className="icon-button" onClick={() => controller.removeEdit(queuedRemove.editId)} aria-label="Cofnij usunięcie">↺</button>
+        <span>{tr('oznaczono do usunięcia')}</span>
+        <button className="icon-button" onClick={() => controller.removeEdit(queuedRemove.editId)} aria-label={tr('Cofnij usunięcie')}>↺</button>
       </div>
     )
   }
@@ -34,16 +35,16 @@ function ExistingItemRow({ id, name, count, controller }: { id: string; name: st
       <strong>{name}</strong>
       <code>{id}</code>
       <input type="number" min={0} value={value} onChange={(event) => setValue(event.target.value)} />
-      <button className="icon-button" type="submit" title="Zastosuj ilość"><Check size={14} /></button>
+      <button className="icon-button" type="submit" title={tr('Zastosuj ilość')}><Check size={14} /></button>
       <button
         className="icon-button"
         type="button"
-        title="Usuń przedmiot"
-        onClick={() => controller.addEdit(removeKey, { kind: 'itemRemove', id, name }, `Usuń: ${name}`)}
+        title={tr('Usuń przedmiot')}
+        onClick={() => controller.addEdit(removeKey, { kind: 'itemRemove', id, name }, tr('Usuń: {0}', name))}
       >
         <Trash2 size={14} />
       </button>
-      {queuedCount && <small className="editor-field__queued">w kolejce: {queuedCount.operation.kind === 'itemCount' ? queuedCount.operation.count : ''}</small>}
+      {queuedCount && <small className="editor-field__queued">{tr('w kolejce: {0}', queuedCount.operation.kind === 'itemCount' ? queuedCount.operation.count : '')}</small>}
     </form>
   )
 }
@@ -64,7 +65,7 @@ function AddItemPanel({ controller }: { controller: PendingEditsController }) {
 
   return (
     <div className="editor-add-item">
-      <SearchField value={query} onChange={setQuery} placeholder="Szukaj klasy przedmiotu do dodania…" />
+      <SearchField value={query} onChange={setQuery} placeholder={tr('Szukaj klasy przedmiotu do dodania…')} />
       <div className="editor-add-item__results">
         {results.map((item) => {
           const key = `item-add:${item.path}`
@@ -73,24 +74,24 @@ function AddItemPanel({ controller }: { controller: PendingEditsController }) {
           const applyAdd = () => {
             const parsed = Math.max(1, Math.round(Number(count)))
             if (!Number.isFinite(parsed)) return
-            controller.addEdit(key, { kind: 'itemAdd', id: item.path, name: item.name, count: parsed }, `Dodaj: ${item.name} ×${parsed}`)
+            controller.addEdit(key, { kind: 'itemAdd', id: item.path, name: item.name, count: parsed }, tr('Dodaj: {0} ×{1}', item.name, parsed))
           }
           return (
             <form key={item.path} className="editor-item-row" onSubmit={(event) => { event.preventDefault(); applyAdd() }}>
               <strong>{item.name}</strong>
-              <span>{item.category}</span>
+              <span>{tr(item.category)}</span>
               <input
                 type="number"
                 min={1}
                 value={count}
                 onChange={(event) => setCounts((prev) => ({ ...prev, [item.id]: event.target.value }))}
               />
-              <button className="icon-button" type="submit" title="Dodaj do ekwipunku"><Plus size={14} /></button>
-              {queued && <b>w kolejce</b>}
+              <button className="icon-button" type="submit" title={tr('Dodaj do ekwipunku')}><Plus size={14} /></button>
+              {queued && <b>{tr('w kolejce')}</b>}
             </form>
           )
         })}
-        {!results.length && query && <div className="inline-empty">Brak wyników</div>}
+        {!results.length && query && <div className="inline-empty">{tr('Brak wyników')}</div>}
       </div>
     </div>
   )
@@ -106,17 +107,17 @@ export function InventoryEditTab({ details, controller }: { details: DeepSaveDet
   return (
     <div className="deep-tab-panel">
       <section className="drawer-section deep-section">
-        <div className="section-heading"><div><p className="eyebrow">EKWIPUNEK</p><h3>Zmień liczebność lub usuń przedmiot</h3></div></div>
-        <SearchField value={query} onChange={setQuery} placeholder="Filtruj posiadane przedmioty…" className="inventory-search" />
+        <div className="section-heading"><div><p className="eyebrow">{tr('EKWIPUNEK')}</p><h3>{tr('Zmień liczebność lub usuń przedmiot')}</h3></div></div>
+        <SearchField value={query} onChange={setQuery} placeholder={tr('Filtruj posiadane przedmioty…')} className="inventory-search" />
         <div className="editor-item-list">
           {filtered.map((item, index) => (
             <ExistingItemRow key={`${item.id}-${index}`} id={item.id} name={item.name} count={item.count} controller={controller} />
           ))}
-          {!filtered.length && <div className="inline-empty">Brak pasujących przedmiotów</div>}
+          {!filtered.length && <div className="inline-empty">{tr('Brak pasujących przedmiotów')}</div>}
         </div>
       </section>
       <section className="drawer-section deep-section">
-        <div className="section-heading"><div><p className="eyebrow">NOWY PRZEDMIOT</p><h3>Dodaj do ekwipunku</h3></div></div>
+        <div className="section-heading"><div><p className="eyebrow">{tr('NOWY PRZEDMIOT')}</p><h3>{tr('Dodaj do ekwipunku')}</h3></div></div>
         <AddItemPanel controller={controller} />
       </section>
     </div>

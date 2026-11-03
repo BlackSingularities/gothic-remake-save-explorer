@@ -5,6 +5,7 @@ import { TabPanelState } from '../../components/Tabs'
 import { formatDuration } from '../../lib/format'
 import { diffSaveDetails, type SaveDiff } from '../../lib/diff'
 import type { DeepSaveDetails, ParsedSave } from '../../types'
+import { tr } from '../../i18n/tr'
 
 const MAX_DEEP_SAMPLES = 25
 
@@ -45,7 +46,7 @@ function DiffList({ title, entries, emptyLabel }: { title: string; entries: Save
       <div className="diff-list">
         {entries.map((entry) => (
           <div key={entry.id}>
-            <strong>{entry.label}</strong>
+            <strong>{tr(entry.label)}</strong>
             <span>{entry.before ?? '—'} <ArrowRight size={12} /> {entry.after ?? '—'}</span>
           </div>
         ))}
@@ -73,12 +74,12 @@ function CompareTool({ saves }: { saves: ParsedSave[] }) {
         window.gothic.inspectDeepSave(afterPath),
       ])
       if (!beforeResult.success || !beforeResult.details || !afterResult.success || !afterResult.details) {
-        setError(beforeResult.error || afterResult.error || 'Nie udało się odczytać obu zapisów')
+        setError(tr(beforeResult.error || afterResult.error || 'Nie udało się odczytać obu zapisów'))
         return
       }
       setDiff(diffSaveDetails(beforeResult.details as DeepSaveDetails, afterResult.details as DeepSaveDetails))
     } catch (compareError) {
-      setError(compareError instanceof Error ? compareError.message : 'Nie udało się porównać zapisów')
+      setError(compareError instanceof Error ? compareError.message : tr('Nie udało się porównać zapisów'))
     } finally {
       setLoading(false)
     }
@@ -87,7 +88,7 @@ function CompareTool({ saves }: { saves: ParsedSave[] }) {
   return (
     <section className="panel compare-tool">
       <div className="section-heading">
-        <div><p className="eyebrow">PORÓWNYWARKA</p><h3>Co się zmieniło między zapisami</h3></div>
+        <div><p className="eyebrow">{tr('PORÓWNYWARKA')}</p><h3>{tr('Co się zmieniło między zapisami')}</h3></div>
         <GitCompareArrows size={20} />
       </div>
       <div className="compare-tool__pickers">
@@ -98,17 +99,17 @@ function CompareTool({ saves }: { saves: ParsedSave[] }) {
         <select value={afterPath} onChange={(event) => setAfterPath(event.target.value)}>
           {ordered.map((save) => <option key={save.filePath} value={save.filePath}>{save.slotName} · {save.displayName}</option>)}
         </select>
-        <button className="button button--primary" onClick={() => void runCompare()} disabled={loading}>Porównaj</button>
+        <button className="button button--primary" onClick={() => void runCompare()} disabled={loading}>{tr('Porównaj')}</button>
       </div>
       <TabPanelState loading={loading} error={error} />
       {diff && (
         <div className="diff-grid">
-          <DiffList title="Zmienione atrybuty" entries={diff.attributes} emptyLabel="Bez zmian" />
-          <DiffList title="Nowe przedmioty" entries={diff.itemsAdded} emptyLabel="Brak nowych" />
-          <DiffList title="Zmiana liczby przedmiotów" entries={diff.itemsChanged} emptyLabel="Bez zmian" />
-          <DiffList title="Utracone przedmioty" entries={diff.itemsRemoved} emptyLabel="Nic nie utracono" />
-          <DiffList title="Zmiana stanu zadań" entries={diff.questsChanged} emptyLabel="Bez zmian" />
-          <DiffList title="Nowe umiejętności" entries={diff.skillsLearned} emptyLabel="Brak nowych" />
+          <DiffList title={tr('Zmienione atrybuty')} entries={diff.attributes} emptyLabel={tr('Bez zmian')} />
+          <DiffList title={tr('Nowe przedmioty')} entries={diff.itemsAdded} emptyLabel={tr('Brak nowych')} />
+          <DiffList title={tr('Zmiana liczby przedmiotów')} entries={diff.itemsChanged} emptyLabel={tr('Bez zmian')} />
+          <DiffList title={tr('Utracone przedmioty')} entries={diff.itemsRemoved} emptyLabel={tr('Nic nie utracono')} />
+          <DiffList title={tr('Zmiana stanu zadań')} entries={diff.questsChanged} emptyLabel={tr('Bez zmian')} />
+          <DiffList title={tr('Nowe umiejętności')} entries={diff.skillsLearned} emptyLabel={tr('Brak nowych')} />
         </div>
       )}
     </section>
@@ -139,33 +140,33 @@ export function StatsPage({ saves }: { saves: ParsedSave[] }) {
       <div className="dashboard-grid">
         <section className="panel panel--chart">
           <div className="section-heading">
-            <div><p className="eyebrow">TEMPO ROZGRYWKI</p><h3>Czas gry między zapisami</h3></div>
+            <div><p className="eyebrow">{tr('TEMPO ROZGRYWKI')}</p><h3>{tr('Czas gry między zapisami')}</h3></div>
             <TrendingUp size={20} />
           </div>
-          <MultiLineChart series={[{ id: 'playtime', label: 'Godziny gry', color: '#d3a14b', points: playtimePoints }]} />
+          <MultiLineChart series={[{ id: 'playtime', label: tr('Godziny gry'), color: '#d3a14b', points: playtimePoints }]} />
           <div className="progress-chart__legend"><span>{formatDuration(playtimePoints[0]?.y * 3600 || 0, true)}</span><span>{formatDuration((playtimePoints.at(-1)?.y || 0) * 3600, true)}</span></div>
         </section>
 
         <section className="panel panel--chart">
           <div className="section-heading">
-            <div><p className="eyebrow">ROZWÓJ POSTACI</p><h3>Poziom w czasie</h3></div>
+            <div><p className="eyebrow">{tr('ROZWÓJ POSTACI')}</p><h3>{tr('Poziom w czasie')}</h3></div>
           </div>
           {levelSeries ? (
-            <MultiLineChart series={[{ id: 'level', label: 'Poziom', color: '#7fae78', points: levelSeries }]} />
+            <MultiLineChart series={[{ id: 'level', label: tr('Poziom'), color: '#7fae78', points: levelSeries }]} />
           ) : (
             <TabPanelState loading error={null} />
           )}
-          {saves.length > MAX_DEEP_SAMPLES && <p className="tab-note">Pokazano ostatnie {MAX_DEEP_SAMPLES} zapisów.</p>}
+          {saves.length > MAX_DEEP_SAMPLES && <p className="tab-note">{tr('Pokazano ostatnie {0} zapisów.', MAX_DEEP_SAMPLES)}</p>}
         </section>
       </div>
 
       {latestFactions && latestFactions.length > 0 && (
         <section className="panel panel--radar">
           <div className="section-heading">
-            <div><p className="eyebrow">REPUTACJA</p><h3>Przewinienia wobec frakcji (najnowszy zapis)</h3></div>
+            <div><p className="eyebrow">{tr('REPUTACJA')}</p><h3>{tr('Przewinienia wobec frakcji (najnowszy zapis)')}</h3></div>
             <Shield size={20} />
           </div>
-          <RadarChart axes={latestFactions.map((faction) => ({ label: faction.label, value: faction.total, max: Math.max(1, ...latestFactions.map((f) => f.total)) }))} />
+          <RadarChart axes={latestFactions.map((faction) => ({ label: tr(faction.label), value: faction.total, max: Math.max(1, ...latestFactions.map((f) => f.total)) }))} />
         </section>
       )}
 

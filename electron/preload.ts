@@ -12,10 +12,10 @@ const api: CompanionApi = {
     return () => ipcRenderer.removeListener('update:progress', listener)
   },
   scan: () => ipcRenderer.invoke('saves:scan'),
-  chooseDirectory: () => ipcRenderer.invoke('saves:choose-directory'),
+  chooseDirectory: (title) => ipcRenderer.invoke('saves:choose-directory', title),
   openDirectory: () => ipcRenderer.invoke('saves:open-directory'),
   inspectDeepSave: (filePath) => ipcRenderer.invoke('saves:inspect-deep', filePath),
-  exportData: (format) => ipcRenderer.invoke('saves:export', format),
+  exportData: (format, title) => ipcRenderer.invoke('saves:export', format, title),
   listNpcs: (filePath) => ipcRenderer.invoke('saves:npcs', filePath),
   npcDetail: (filePath, id) => ipcRenderer.invoke('saves:npc-detail', filePath, id),
   listTraders: (filePath) => ipcRenderer.invoke('saves:traders', filePath),

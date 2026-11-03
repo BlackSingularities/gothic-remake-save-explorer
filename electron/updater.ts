@@ -59,7 +59,7 @@ export async function downloadUpdate(info: UpdateInfo, onProgress: (fraction: nu
       const chunk = await reader.read()
       if (chunk.done) break
       done += chunk.value.length
-      if (!file.write(chunk.value)) await new Promise((resolve) => file.once('drain', resolve))
+      if (!file.write(chunk.value)) await new Promise<void>((resolve) => file.once('drain', () => resolve()))
       if (total) onProgress(done / total)
     }
   } finally {

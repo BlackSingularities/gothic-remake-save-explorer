@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { SearchField, ViewToggle } from '../../../components/Controls'
 import { useViewMode } from '../../../lib/hooks'
 import type { DeepSaveDetails } from '../../../types'
+import { tr } from '../../../i18n/tr'
 
 export function InventoryTab({ details }: { details: DeepSaveDetails }) {
   const [query, setQuery] = useState('')
@@ -15,12 +16,12 @@ export function InventoryTab({ details }: { details: DeepSaveDetails }) {
   return (
     <div className="deep-tab-panel">
       <div className="inventory-summary">
-        <div><span>Stosy</span><strong>{details.inventory.stackCount}</strong></div>
-        <div><span>Sztuki łącznie</span><strong>{details.inventory.totalItemCount}</strong></div>
-        <div><span>Wyposażone</span><strong>{details.inventory.equippedCount}</strong></div>
+        <div><span>{tr('Stosy')}</span><strong>{details.inventory.stackCount}</strong></div>
+        <div><span>{tr('Sztuki łącznie')}</span><strong>{details.inventory.totalItemCount}</strong></div>
+        <div><span>{tr('Wyposażone')}</span><strong>{details.inventory.equippedCount}</strong></div>
       </div>
       <div className="tab-toolbar">
-        <SearchField value={query} onChange={setQuery} placeholder="Szukaj przedmiotu lub identyfikatora…" className="inventory-search" />
+        <SearchField value={query} onChange={setQuery} placeholder={tr('Szukaj przedmiotu lub identyfikatora…')} className="inventory-search" />
         <ViewToggle value={viewMode} onChange={setViewMode} />
       </div>
       {viewMode === 'list' ? (
@@ -29,11 +30,11 @@ export function InventoryTab({ details }: { details: DeepSaveDetails }) {
             <div key={`${item.id}-${item.count}-${index}`} className={item.equipped ? 'is-equipped' : ''}>
               <span className="item-count">{item.count}</span>
               <div><strong>{item.name}</strong><code>{item.id}</code></div>
-              <span className="item-category">{item.category}</span>
-              {item.equipped && <b>UŻYWANE</b>}
+              <span className="item-category">{tr(item.category)}</span>
+              {item.equipped && <b>{tr('UŻYWANE')}</b>}
             </div>
           ))}
-          {!filtered.length && <div className="inline-empty">Brak pasujących przedmiotów</div>}
+          {!filtered.length && <div className="inline-empty">{tr('Brak pasujących przedmiotów')}</div>}
         </div>
       ) : (
         <div className="tile-grid">
@@ -41,11 +42,11 @@ export function InventoryTab({ details }: { details: DeepSaveDetails }) {
             <div key={`${item.id}-${item.count}-${index}`} className={`item-tile${item.equipped ? ' is-equipped' : ''}`}>
               <span className="item-tile__count">{item.count}</span>
               <strong>{item.name}</strong>
-              <span>{item.category}</span>
-              {item.equipped && <b>UŻYWANE</b>}
+              <span>{tr(item.category)}</span>
+              {item.equipped && <b>{tr('UŻYWANE')}</b>}
             </div>
           ))}
-          {!filtered.length && <div className="inline-empty">Brak pasujących przedmiotów</div>}
+          {!filtered.length && <div className="inline-empty">{tr('Brak pasujących przedmiotów')}</div>}
         </div>
       )}
     </div>

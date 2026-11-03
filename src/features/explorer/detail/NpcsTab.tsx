@@ -5,26 +5,28 @@ import { Modal } from '../../../components/Modal'
 import { TabPanelState } from '../../../components/Tabs'
 import { useAsyncResource, useViewMode } from '../../../lib/hooks'
 import type { NpcDetail, NpcRelationship, NpcSummary } from '../../../types'
+import { tr } from '../../../i18n/tr'
 
 const relationshipLabels: Record<NpcRelationship, string> = { friend: 'Przyjazny', neutral: 'Neutralny', enemy: 'Wrogi' }
+const relationshipLabel = (value: NpcRelationship) => tr(relationshipLabels[value])
 
 function NpcDetailPanel({ npc, onClose }: { npc: NpcDetail; onClose: () => void }) {
   return (
     <div className="npc-detail-panel">
       <div className="npc-detail-panel__head">
         <h4>{npc.name}</h4>
-        <button className="icon-button" onClick={onClose} aria-label="Zamknij"><X size={16} /></button>
+        <button className="icon-button" onClick={onClose} aria-label={tr('Zamknij')}><X size={16} /></button>
       </div>
       {npc.position && (
         <p className="npc-detail-panel__position">
-          <MapPinned size={14} /> {npc.position.nearestArea || 'Nieznana okolica'}
+          <MapPinned size={14} /> {npc.position.nearestArea || tr('Nieznana okolica')}
           <code>X {Math.round(npc.position.location.x)} · Y {Math.round(npc.position.location.y)} · Z {Math.round(npc.position.location.z)}</code>
         </p>
       )}
       {npc.attributes.length > 0 && (
         <div className="attribute-grid attribute-grid--compact">
           {npc.attributes.slice(0, 9).map((attribute) => (
-            <div key={attribute.id}><span>{attribute.label}</span><strong>{attribute.current}</strong></div>
+            <div key={attribute.id}><span>{tr(attribute.label)}</span><strong>{attribute.current}</strong></div>
           ))}
         </div>
       )}
@@ -34,7 +36,7 @@ function NpcDetailPanel({ npc, onClose }: { npc: NpcDetail; onClose: () => void 
             <div key={`${item.id}-${index}`} className={item.equipped ? 'is-equipped' : ''}>
               <span className="item-count">{item.count}</span>
               <div><strong>{item.name}</strong></div>
-              {item.equipped && <b>UŻYWANE</b>}
+              {item.equipped && <b>{tr('UŻYWANE')}</b>}
             </div>
           ))}
         </div>
@@ -67,25 +69,25 @@ export function NpcsTab({ filePath }: { filePath: string }) {
   return (
     <div className="deep-tab-panel">
       <div className="world-grid world-grid--compact">
-        <div><span>Postacie w świecie</span><strong>{npcs.data?.length ?? '—'}</strong><small>{(npcs.data || []).filter((n) => n.isDead).length} martwych</small></div>
-        <div><span>Przyjazne</span><strong>{(npcs.data || []).filter((n) => n.relationship === 'friend').length}</strong></div>
-        <div><span>Wrogie</span><strong>{(npcs.data || []).filter((n) => n.relationship === 'enemy').length}</strong></div>
+        <div><span>{tr('Postacie w świecie')}</span><strong>{npcs.data?.length ?? '—'}</strong><small>{tr('{0} martwych', (npcs.data || []).filter((n) => n.isDead).length)}</small></div>
+        <div><span>{tr('Przyjazne')}</span><strong>{(npcs.data || []).filter((n) => n.relationship === 'friend').length}</strong></div>
+        <div><span>{tr('Wrogie')}</span><strong>{(npcs.data || []).filter((n) => n.relationship === 'enemy').length}</strong></div>
       </div>
       <div className="tab-toolbar">
-        <SearchField value={query} onChange={setQuery} placeholder="Szukaj postaci…" />
+        <SearchField value={query} onChange={setQuery} placeholder={tr('Szukaj postaci…')} />
         <SegmentedControl
           value={relationship}
           onChange={setRelationship}
           options={[
-            { value: 'all', label: 'Wszyscy' },
-            { value: 'friend', label: 'Przyjaźni' },
-            { value: 'neutral', label: 'Neutralni' },
-            { value: 'enemy', label: 'Wrodzy' },
+            { value: 'all', label: tr('Wszyscy') },
+            { value: 'friend', label: tr('Przyjaźni') },
+            { value: 'neutral', label: tr('Neutralni') },
+            { value: 'enemy', label: tr('Wrodzy') },
           ]}
         />
         <ViewToggle value={viewMode} onChange={setViewMode} />
       </div>
-      <TabPanelState loading={npcs.loading} error={npcs.error} empty={!npcs.loading && !filtered.length} emptyLabel="Brak pasujących postaci" />
+      <TabPanelState loading={npcs.loading} error={npcs.error} empty={!npcs.loading && !filtered.length} emptyLabel={tr('Brak pasujących postaci')} />
 
       {selectedId && (
         <Modal onClose={() => setSelectedId(null)}>
@@ -100,8 +102,8 @@ export function NpcsTab({ filePath }: { filePath: string }) {
             <button key={npc.id} className={`npc-row npc-row--${npc.relationship}`} onClick={() => setSelectedId(npc.id)}>
               {npc.isDead ? <Skull size={14} /> : <Heart size={14} />}
               <strong>{npc.name}</strong>
-              <span>{npc.hp}/{npc.maxHp} PŻ</span>
-              <b>{relationshipLabels[npc.relationship]}</b>
+              <span>{tr('{0}/{1} PŻ', npc.hp, npc.maxHp)}</span>
+              <b>{relationshipLabel(npc.relationship)}</b>
             </button>
           ))}
         </div>
@@ -112,12 +114,12 @@ export function NpcsTab({ filePath }: { filePath: string }) {
             <button key={npc.id} className={`npc-tile npc-tile--${npc.relationship}`} onClick={() => setSelectedId(npc.id)}>
               {npc.isDead ? <Skull size={16} /> : <Heart size={16} />}
               <strong>{npc.name}</strong>
-              <span>{npc.hp}/{npc.maxHp} PŻ</span>
+              <span>{tr('{0}/{1} PŻ', npc.hp, npc.maxHp)}</span>
             </button>
           ))}
         </div>
       )}
-      {filtered.length > 400 && <p className="tab-note">Pokazano pierwsze 400 z {filtered.length} dopasowań — zawęź wyszukiwanie.</p>}
+      {filtered.length > 400 && <p className="tab-note">{tr('Pokazano pierwsze 400 z {0} dopasowań — zawęź wyszukiwanie.', filtered.length)}</p>}
     </div>
   )
 }

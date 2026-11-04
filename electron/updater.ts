@@ -6,7 +6,7 @@ import path from 'node:path'
 import type { UpdateInfo } from '../src/types'
 
 // Kopia wydań w formacie API GitHuba – instalator pobierany jest z redzikowski.com.
-const FEED = 'https://redzikowski.com/api/github/repos/BlackSingularities/gothic-remake-save-explorer/releases/latest'
+const FEED = 'https://redzikowski.com/api/releases/repos/BlackSingularities/gothic-remake-save-explorer/releases/latest'
 
 interface FeedAsset { name: string; size: number; browser_download_url: string }
 interface FeedRelease { tag_name: string; name?: string; body?: string; html_url: string; published_at?: string; assets?: FeedAsset[] }
@@ -25,7 +25,7 @@ export function isNewer(candidate: string, current: string): boolean {
 }
 
 export async function checkForUpdate(): Promise<UpdateInfo | null> {
-  const response = await net.fetch(FEED, { headers: { Accept: 'application/vnd.github+json', 'User-Agent': `GothicRemakeSaveExplorer/${app.getVersion()}` } })
+  const response = await net.fetch(FEED, { headers: { Accept: 'application/json', 'User-Agent': `GothicRemakeSaveExplorer/${app.getVersion()}` } })
   if (!response.ok) throw new Error(`Serwer aktualizacji zwrócił kod ${response.status}`)
   const release = await response.json() as FeedRelease
   const version = release.tag_name.replace(/^v/i, '')

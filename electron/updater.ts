@@ -33,8 +33,8 @@ export async function checkForUpdate(): Promise<UpdateInfo | null> {
   const installer = release.assets?.find((asset) => /setup.*\.exe$/i.test(asset.name))
   return {
     version,
-    notes: release.body || '',
-    pageUrl: release.html_url,
+    notes: '',
+    pageUrl: '',
     publishedAt: release.published_at || '',
     assetUrl: installer?.browser_download_url || '',
     assetName: installer?.name || '',

@@ -42,6 +42,7 @@ const en: Record<string, string> = {
   'TYLKO ODCZYT': 'READ ONLY',
   'Pliki gry są bezpieczne': 'Game files are safe',
   'Zamknij menu': 'Close menu',
+  'Zgłoś błąd lub sugestię': 'Report a problem or suggest a feature',
   'Profil {0}': 'Profile {0}',
   'PROFIL {0}': 'PROFILE {0}',
   'Dodano nowy zapis': 'New save added',

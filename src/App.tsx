@@ -1,4 +1,4 @@
-import { Check, FolderOpen, LayoutGrid, Menu, RefreshCcw, ScrollText, Settings, Shield, X } from 'lucide-react'
+import { Bug, Check, FolderOpen, LayoutGrid, Menu, RefreshCcw, ScrollText, Settings, Shield, X } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { BrandMark } from './components/Brand'
 import { UpdateBanner } from './components/UpdateBanner'
@@ -10,6 +10,7 @@ import { StatsPage } from './features/stats/StatsPage'
 import { LanguageProvider, useT } from './i18n/LanguageContext'
 import type { ParsedSave, ScanResult } from './types'
 import { tr } from './i18n/tr'
+import { openFeedback } from './lib/feedback.js'
 
 type Page = 'explorer' | 'stats' | 'settings'
 type ProfileFilter = 'all' | number
@@ -131,6 +132,7 @@ function AppShell() {
             )}
             <div className="folder-chip" title={scan?.directory}><FolderOpen size={15} /><span>{scan?.directory.split(/[\\/]/).slice(-3).join(' / ')}</span></div>
             <button className="icon-button" aria-label={t('common.refresh')} onClick={() => void reload()} disabled={refreshing}><RefreshCcw size={17} className={refreshing ? 'is-spinning' : ''} /></button>
+            <button className="icon-button" aria-label={tr('Zgłoś błąd lub sugestię')} title={tr('Zgłoś błąd lub sugestię')} onClick={() => openFeedback()}><Bug size={17} /></button>
           </div>
         </header>
 

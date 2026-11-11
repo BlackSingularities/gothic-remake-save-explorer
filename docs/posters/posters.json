@@ -1,0 +1,37 @@
+{
+  "slug": "gothic-save-explorer",
+  "name": "Gothic Remake Save Explorer",
+  "label": "przeglądarka i edytor zapisów gry",
+  "icon": "icon.png",
+  "url": "https://redzikowski.com/portfolio/gothic-save-explorer",
+  "posters": [
+    {
+      "platform": "windows",
+      "file": "windows.png",
+      "title": "Cały stan gry *na wyciągnięcie ręki*",
+      "lead": "Postać, ekwipunek, zadania, NPC i reputacja z zapisów Gothic 1 Remake – a w trybie edytora bezpieczne zmiany.",
+      "shots": [
+        {
+          "src": "../screenshots/windows/01.png",
+          "caption": "Eksplorator zapisów"
+        },
+        {
+          "src": "../screenshots/windows/02.png",
+          "caption": "Postać"
+        },
+        {
+          "src": "../screenshots/windows/03.png",
+          "caption": "Ekwipunek"
+        }
+      ],
+      "features": [
+        "podgląd zmian na żywo",
+        "porównywarka zapisów",
+        "edycja zawsze do nowego slotu",
+        "polskie nazwy z gry",
+        "interfejs PL i EN"
+      ],
+      "meta": "Windows 10 i 11"
+    }
+  ]
+}

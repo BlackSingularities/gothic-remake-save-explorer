@@ -1,5 +1,13 @@
 # Gothic Remake Save Explorer
 
+<!-- posters:start -->
+<p align="center">
+  <img src="docs/posters/windows.png" alt="Gothic Remake Save Explorer – Windows" width="460">
+</p>
+
+<p align="center"><a href="https://redzikowski.com/portfolio/gothic-save-explorer">redzikowski.com/portfolio/gothic-save-explorer</a></p>
+<!-- posters:end -->
+
 Nieoficjalny, lokalny eksplorator zapisów dla **Gothic 1 Remake**. Automatycznie wykrywa katalog zapisów, wyciąga z nich możliwie pełny obraz stanu gry i pokazuje go w czytelnym, dwujęzycznym (PL/EN) interfejsie — bez modyfikowania oryginalnych plików. Osobny tryb edytora pozwala świadomie zmieniać dane, ale zawsze na kopii, dokładanej jako nowy slot zapisu.
 
 Projekt nie jest afiliowany z Alkimia Interactive ani THQ Nordic.
